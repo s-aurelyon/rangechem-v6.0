@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Industrial and Domestic Products</title>
+  <desc id="desc">A separate factory and house representing industrial and domestic products</desc>
+  <rect width="32" height="32" rx="8" fill="#FEF2F2"/>
+  <g stroke="#D63121" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.2 23.4v-8.1l3.55 2.15v-2.15l3.55 2.15v-6.3h2.4v12.25H6.2Z"/>
+    <path d="M8.15 20.25h1.3M11.65 20.25h1.3"/>
+    <path d="m18.3 18.05 4.3-3.45 4.3 3.45"/>
+    <path d="M19.3 17.35v6.05h6.6v-6.05"/>
+    <path d="M21.75 23.4v-2.8h1.7v2.8"/>
+  </g>
+</svg>
