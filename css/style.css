@@ -1069,8 +1069,10 @@ html {
 
 .category-card {
     display: flex;
-    flex-direction: column;
-    padding: 2rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.75rem;
+    padding: 1.75rem;
     background: #ffffff;
     border: 1.5px solid var(--rc-gray-200);
     border-radius: var(--rc-radius-lg);
@@ -1079,6 +1081,15 @@ html {
     position: relative;
     overflow: hidden;
     transition: transform var(--rc-transition), box-shadow var(--rc-transition), border-color var(--rc-transition), background var(--rc-transition);
+}
+
+@media (max-width: 640px) {
+    .category-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+        padding: 1.5rem;
+    }
 }
 
 .category-card::before {
@@ -1103,98 +1114,63 @@ html {
     background: var(--rc-red);
 }
 
-.category-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
-}
-
-.category-icon-box {
-    width: 54px;
-    height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(214, 49, 33, 0.1);
-    color: var(--rc-red);
-    border-radius: 0.85rem;
-    transition: all var(--rc-transition);
-}
-
-.category-card:hover .category-icon-box {
-    background: var(--rc-red);
-    color: #ffffff;
-    transform: scale(1.08) rotate(2deg);
-    box-shadow: 0 6px 18px rgba(214, 49, 33, 0.4);
-}
-
-.category-icon-box img,
-.category-icon-box svg {
-    transition: filter var(--rc-transition);
-}
-
-.category-card:hover .category-icon-box img {
-    filter: brightness(0) invert(1);
-}
-
-.category-svg-box {
-    width: 54px;
-    height: 54px;
+.category-media-box {
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f8fafc;
     border: 1.5px solid var(--rc-gray-200);
-    border-radius: 0.85rem;
-    padding: 6px;
+    border-radius: 1.1rem;
+    padding: 10px;
     transition: all var(--rc-transition);
 }
 
-.category-card:hover .category-svg-box {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(214, 49, 33, 0.6);
-    transform: scale(1.12) translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+@media (max-width: 640px) {
+    .category-media-box {
+        width: 100px;
+        height: 100px;
+    }
 }
 
-.category-svg-box img,
-.category-svg-box svg {
+.category-card:hover .category-media-box {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(214, 49, 33, 0.5);
+    transform: scale(1.06) translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.category-media-box img,
+.category-media-box svg {
     max-width: 100%;
     max-height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.12));
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
     transition: transform var(--rc-transition);
 }
 
-.category-card:hover .category-svg-box img,
-.category-card:hover .category-svg-box svg {
+.category-card:hover .category-media-box img,
+.category-card:hover .category-media-box svg {
     transform: scale(1.05);
 }
 
-.category-number-badge {
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    background: var(--rc-gray-100);
-    color: var(--rc-gray-500);
-    transition: all var(--rc-transition);
-}
-
-.category-card:hover .category-number-badge {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.75);
+.category-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
 }
 
 .category-card-title {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--rc-primary);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     transition: color var(--rc-transition);
 }
 
@@ -1203,11 +1179,10 @@ html {
 }
 
 .category-card-desc {
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     color: var(--rc-gray-500);
-    line-height: 1.65;
-    margin-bottom: 1.75rem;
-    flex: 1;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
     transition: color var(--rc-transition);
 }
 
