@@ -1,0 +1,437 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Background Backdrop Glow for presentation (subtle & removable) -->
+    <radialGradient id="bgGlow" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#F1F5F9" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Professional Studio Shadow Filters -->
+    <filter id="studioDropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="20" flood-color="#0F172A" flood-opacity="0.12"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+
+    <filter id="jugOverlapShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="-10" dy="18" stdDeviation="16" flood-color="#090E17" flood-opacity="0.22"/>
+      <feDropShadow dx="-4" dy="6" stdDeviation="6" flood-color="#090E17" flood-opacity="0.14"/>
+    </filter>
+
+    <filter id="crispShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.06"/>
+    </filter>
+
+    <!-- 25L Drum Gradients (Frosted Semi-translucent HDPE Aesthetic) -->
+    <linearGradient id="drum25LGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#CBD5E1"/>
+      <stop offset="6%" stop-color="#E2E8F0"/>
+      <stop offset="20%" stop-color="#F8FAFC"/>
+      <stop offset="50%" stop-color="#FFFFFF"/>
+      <stop offset="80%" stop-color="#F1F5F9"/>
+      <stop offset="94%" stop-color="#D9E2EC"/>
+      <stop offset="100%" stop-color="#B8C5D3"/>
+    </linearGradient>
+
+    <linearGradient id="drumTopRimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#D5DFE8" stop-opacity="0.4"/>
+    </linearGradient>
+
+    <linearGradient id="drumGripGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#94A3B8" stop-opacity="0.5"/>
+      <stop offset="40%" stop-color="#CBD5E1" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+    </linearGradient>
+
+    <linearGradient id="drumGlossHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#FFFFFF" stop-opacity="0.7"/>
+      <stop offset="45%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Stylistic Emerald Cap Gradients -->
+    <linearGradient id="capEmeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="25%" stop-color="#059669"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="80%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#065F46"/>
+    </linearGradient>
+
+    <linearGradient id="capTopEmerald" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <!-- 5L Jug Gradients (Sleek Opaque Pearlescent White) -->
+    <linearGradient id="jug5LGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#CBD5E1"/>
+      <stop offset="10%" stop-color="#EEF2F6"/>
+      <stop offset="28%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#FFFFFF"/>
+      <stop offset="90%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#BAC7D5"/>
+    </linearGradient>
+
+    <linearGradient id="whiteCapSleek" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#94A3B8"/>
+      <stop offset="25%" stop-color="#F1F5F9"/>
+      <stop offset="55%" stop-color="#FFFFFF"/>
+      <stop offset="85%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#64748B"/>
+    </linearGradient>
+
+    <!-- Coral Red Brand Accents -->
+    <linearGradient id="brandRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E"/>
+      <stop offset="100%" stop-color="#E11D48"/>
+    </linearGradient>
+
+    <!-- Ground Ambient Reflection Gradient -->
+    <linearGradient id="reflectionGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#94A3B8" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#94A3B8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Backdrop -->
+  <rect x="0" y="0" width="900" height="1200" fill="url(#bgGlow)"/>
+
+  <!-- ================= GROUND SHADOWS & AMBIENT BASE ================= -->
+  <g id="ground-shadows" opacity="0.8">
+    <ellipse cx="430" cy="1135" rx="360" ry="30" fill="#0F172A" fill-opacity="0.08"/>
+    <ellipse cx="370" cy="1130" rx="270" ry="20" fill="#0F172A" fill-opacity="0.14"/>
+    <ellipse cx="650" cy="1150" rx="210" ry="22" fill="#0F172A" fill-opacity="0.22"/>
+    <ellipse cx="660" cy="1152" rx="140" ry="12" fill="#0F172A" fill-opacity="0.32"/>
+  </g>
+
+  <!-- ================= 25L INDUSTRIAL CONTAINER (BACKGROUND) ================= -->
+  <g id="stylistic-25L" filter="url(#studioDropShadow)">
+    
+    <!-- 25L Top Cap Structure -->
+    <g id="cap-25L">
+      <!-- Cap Neck Base -->
+      <path d="M386 88 C386 78 398 72 440 72 C482 72 494 78 494 88 V96 C494 102 482 106 440 106 C398 106 386 102 386 96 Z" fill="#064E3B"/>
+      
+      <!-- Green Cap Main Body -->
+      <path d="M388 64 C388 56 400 50 440 50 C480 50 492 56 492 64 V84 C492 92 480 98 440 98 C400 98 388 92 388 84 Z" fill="url(#capEmeraldGrad)"/>
+      <ellipse cx="440" cy="64" rx="52" ry="13" fill="url(#capTopEmerald)" stroke="#6EE7B7" stroke-width="1"/>
+      
+      <!-- Tactile Vertical Ribs on Cap -->
+      <g stroke="#064E3B" stroke-width="2.5" stroke-linecap="round" opacity="0.65">
+        <line x1="396" y1="67" x2="396" y2="84"/>
+        <line x1="408" y1="71" x2="408" y2="89"/>
+        <line x1="422" y1="74" x2="422" y2="93"/>
+        <line x1="436" y1="76" x2="436" y2="95"/>
+        <line x1="448" y1="76" x2="448" y2="95"/>
+        <line x1="462" y1="74" x2="462" y2="93"/>
+        <line x1="474" y1="71" x2="474" y2="89"/>
+        <line x1="484" y1="67" x2="484" y2="84"/>
+      </g>
+      
+      <!-- White Pouring Spout Clip Tab -->
+      <path d="M433 36 C433 33 436 31 440 31 C444 31 447 33 447 36 L451 72 C451 77 446 82 440 82 C434 82 429 77 429 72 Z" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+      <ellipse cx="440" cy="36" rx="7" ry="3.5" fill="#FFFFFF"/>
+    </g>
+
+    <!-- 25L Drum Main Body Hull -->
+    <path d="M225 96
+             C245 74 305 58 382 60
+             C392 60 396 68 402 78
+             C414 98 466 98 478 78
+             C484 68 488 60 498 60
+             C575 58 635 74 655 96
+             C715 140 755 255 745 465
+             C735 690 755 910 718 1050
+             C698 1105 640 1134 525 1140
+             C445 1144 330 1144 255 1140
+             C140 1134 82 1105 62 1050
+             C25 910 45 690 35 465
+             C25 255 65 140 125 96
+             C145 80 185 72 225 96 Z"
+          fill="url(#drum25LGrad)"
+          stroke="#94A3B8"
+          stroke-width="3"
+          stroke-linejoin="round"/>
+
+    <!-- Gloss Highlight Sweep on Drum -->
+    <path d="M225 96
+             C245 74 305 58 382 60
+             C392 60 396 68 402 78
+             C414 98 466 98 478 78
+             C484 68 488 60 498 60
+             C575 58 635 74 655 96
+             C715 140 755 255 745 465
+             C735 690 755 910 718 1050
+             C698 1105 640 1134 525 1140
+             C445 1144 330 1144 255 1140
+             C140 1134 82 1105 62 1050
+             C25 910 45 690 35 465
+             C25 255 65 140 125 96
+             C145 80 185 72 225 96 Z"
+          fill="url(#drumGlossHighlight)"/>
+
+    <!-- Molded Top Grip Indentations (Left & Right) -->
+    <g id="top-molded-grips">
+      <!-- Left Grip Recess -->
+      <path d="M165 88 C195 78 250 78 270 100 C250 110 190 110 165 88 Z" fill="url(#drumGripGrad)" stroke="#CBD5E1" stroke-width="1.5"/>
+      <path d="M150 100 C175 88 270 88 295 112 C280 120 170 120 150 100 Z" fill="#64748B" fill-opacity="0.12"/>
+
+      <!-- Right Grip Recess -->
+      <path d="M595 88 C565 78 510 78 490 100 C510 110 570 110 595 88 Z" fill="url(#drumGripGrad)" stroke="#CBD5E1" stroke-width="1.5"/>
+      <path d="M610 100 C585 88 490 88 465 112 C480 120 590 120 610 100 Z" fill="#64748B" fill-opacity="0.12"/>
+    </g>
+
+    <!-- Sculpted Shoulder Curves -->
+    <path d="M85 240 C140 220 265 208 440 208 C615 208 680 220 715 240" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+    <path d="M75 250 C130 230 260 218 440 218 C620 218 690 230 725 250" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+
+    <!-- ================= 25L PRODUCT LABEL ================= -->
+    <g id="label-panel-25L" transform="translate(165, 290)" filter="url(#crispShadow)">
+      <!-- Label Card Background (Crisp Modern Surface) -->
+      <rect x="0" y="0" width="460" height="500" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+      <rect x="10" y="10" width="440" height="480" rx="6" fill="none" stroke="#F1F5F9" stroke-width="1.5"/>
+
+      <!-- Stylized Top Border Wire with Center Brand Pill -->
+      <path d="M12 28 H170 M290 28 H448" stroke="#E11D48" stroke-width="2" stroke-linecap="round"/>
+      <rect x="175" y="16" width="110" height="24" rx="12" fill="#FFF1F2" stroke="#E11D48" stroke-width="1.5"/>
+      <rect x="190" y="24" width="80" height="8" rx="4" fill="url(#brandRedGrad)"/>
+
+      <!-- Circular Logo Emblem (Top Left) -->
+      <g id="emblem-25L" transform="translate(24, 46)">
+        <circle cx="44" cy="44" r="40" fill="#FFFFFF" stroke="url(#brandRedGrad)" stroke-width="3.5"/>
+        <circle cx="44" cy="44" r="33" fill="none" stroke="#F43F5E" stroke-width="1.5" stroke-dasharray="3.5 2"/>
+        
+        <!-- Arched Top & Bottom Brand Markings -->
+        <path d="M22 32 C30 22 58 22 66 32" stroke="#E11D48" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        <path d="M24 56 C32 64 56 64 64 56" stroke="#E11D48" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+
+        <!-- Central Chemical Reaction Flask -->
+        <path d="M40 30 H48 M44 30 V39 L53 55 C55 58 52 61 48 61 H40 C36 61 33 58 35 55 L44 39" 
+              fill="url(#brandRedGrad)" stroke="#E11D48" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="44" cy="51" r="2.2" fill="#FFFFFF"/>
+        <circle cx="48" cy="55" r="1.5" fill="#FFFFFF"/>
+
+        <!-- Left/Right Cross Accents -->
+        <line x1="8" y1="44" x2="16" y2="44" stroke="#E11D48" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="72" y1="44" x2="80" y2="44" stroke="#E11D48" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+
+      <!-- Main Product Typography Lines -->
+      <g id="typography-header-25L" transform="translate(125, 54)">
+        <!-- Primary Bold Title Bar (DISH "O" MAX) -->
+        <rect x="0" y="0" width="310" height="24" rx="6" fill="#0F172A"/>
+        
+        <!-- Secondary Red Category Subtitle Bars -->
+        <rect x="15" y="32" width="280" height="11" rx="5.5" fill="url(#brandRedGrad)"/>
+        <rect x="55" y="48" width="200" height="9" rx="4.5" fill="url(#brandRedGrad)"/>
+      </g>
+
+      <!-- Description Block (Refined modern pills) -->
+      <g transform="translate(24, 154)">
+        <rect x="0" y="0" width="412" height="7" rx="3.5" fill="#334155"/>
+        <rect x="0" y="13" width="395" height="7" rx="3.5" fill="#334155"/>
+        <rect x="0" y="26" width="350" height="7" rx="3.5" fill="#334155"/>
+      </g>
+
+      <!-- Section 1: DIRECTIONS FOR USE -->
+      <g transform="translate(24, 208)">
+        <rect x="0" y="0" width="130" height="9" rx="4.5" fill="#0F172A"/>
+        <rect x="0" y="16" width="245" height="6" rx="3" fill="#64748B"/>
+        <rect x="0" y="27" width="230" height="6" rx="3" fill="#64748B"/>
+        <rect x="0" y="38" width="400" height="6" rx="3" fill="#64748B"/>
+      </g>
+
+      <!-- Section 2: CAUTION -->
+      <g transform="translate(24, 276)">
+        <rect x="0" y="0" width="68" height="9" rx="4.5" fill="#0F172A"/>
+        <rect x="0" y="15" width="405" height="6" rx="3" fill="#64748B"/>
+        <rect x="0" y="26" width="115" height="6" rx="3" fill="#64748B"/>
+      </g>
+
+      <!-- Section 3: STORAGE -->
+      <g transform="translate(24, 332)">
+        <rect x="0" y="0" width="72" height="9" rx="4.5" fill="#0F172A"/>
+        <rect x="0" y="15" width="285" height="6" rx="3" fill="#64748B"/>
+      </g>
+
+      <!-- Disclaimer Fine Lines -->
+      <g transform="translate(24, 396)" opacity="0.65">
+        <line x1="0" y1="0" x2="412" y2="0" stroke="#CBD5E1" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="25" y="11" width="362" height="4.5" rx="2" fill="#64748B"/>
+        <rect x="70" y="20" width="272" height="4.5" rx="2" fill="#64748B"/>
+      </g>
+
+      <!-- Bottom Address & Contact Info Bar -->
+      <g transform="translate(24, 446)">
+        <rect x="0" y="0" width="412" height="34" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5"/>
+        <rect x="18" y="13" width="376" height="8" rx="4" fill="#64748B"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ================= 5L ERGONOMIC CONTAINER (FOREGROUND) ================= -->
+  <g id="stylistic-5L">
+    <!-- Sophisticated Cast Shadow Behind 5L Jug onto 25L Drum & Floor -->
+    <path d="M380 575
+             C400 550 445 545 490 545
+             H735
+             C785 545 825 585 835 635
+             L835 1130
+             C835 1170 775 1195 695 1195
+             H420
+             C360 1195 350 1150 350 1100
+             L350 635
+             C350 595 370 580 380 575 Z"
+          fill="#0B111A"
+          filter="url(#jugOverlapShadow)"/>
+
+    <!-- 5L Left Spout Neck & Cap Assembly -->
+    <g id="cap-5L" transform="translate(390, 545)">
+      <!-- Neck Base Ring -->
+      <path d="M4 44 C4 38 14 32 44 32 C74 32 84 38 84 44 V52 H4 Z" fill="#CBD5E1"/>
+      
+      <!-- Sleek White Ribbed Screw Cap -->
+      <rect x="2" y="2" width="84" height="42" rx="6" fill="url(#whiteCapSleek)" stroke="#94A3B8" stroke-width="1.5"/>
+      <ellipse cx="44" cy="4" rx="42" ry="7" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+      
+      <!-- Modern Vertical Grip Texture -->
+      <g stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round" opacity="0.6">
+        <line x1="14" y1="5" x2="14" y2="41"/>
+        <line x1="26" y1="5" x2="26" y2="41"/>
+        <line x1="38" y1="5" x2="38" y2="41"/>
+        <line x1="50" y1="5" x2="50" y2="41"/>
+        <line x1="62" y1="5" x2="62" y2="41"/>
+        <line x1="74" y1="5" x2="74" y2="41"/>
+      </g>
+    </g>
+
+    <!-- 5L Main Body & Sculpted Handle Outer Perimeter -->
+    <path d="M394 600
+             H478
+             L494 624
+             C510 594 545 554 610 554
+             H728
+             C792 554 832 594 846 654
+             C856 700 850 760 850 810
+             L846 1100
+             C842 1155 805 1190 735 1192
+             H475
+             C405 1192 368 1155 365 1100
+             L360 810
+             C360 720 378 640 394 600 Z"
+          fill="url(#jug5LGrad)"
+          stroke="#94A3B8"
+          stroke-width="3"
+          stroke-linejoin="round"
+          filter="url(#studioDropShadow)"/>
+
+    <!-- 5L Ergonomic Handle Cutout Hole (with 3 finger indentations underneath) -->
+    <g id="handle-cutout-5L">
+      <path d="M572 632
+               C572 612 596 602 635 602
+               H722
+               C760 602 780 615 780 638
+               C780 662 765 674 748 678
+               C728 684 715 678 695 686
+               C675 693 665 680 645 686
+               C625 693 610 680 590 678
+               C575 673 572 658 572 632 Z"
+            fill="#D9E3EC"
+            stroke="#7E8F9D"
+            stroke-width="2.5"
+            stroke-linejoin="round"/>
+
+      <!-- Inner Shadow Depth on Top of Cutout -->
+      <path d="M572 632 C572 612 596 602 635 602 H722 C760 602 780 615 780 638" 
+            stroke="#5A6D7C" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.65"/>
+      <!-- Tactile White Highlight Along Bottom Finger Grooves -->
+      <path d="M780 638 C780 662 765 674 748 678 C728 684 715 678 695 686 C675 693 665 680 645 686 C625 693 610 680 590 678 C575 673 572 658 572 632" 
+            stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+    </g>
+
+    <!-- 5L Shoulder Bevel Line & Highlights -->
+    <path d="M375 765 C390 735 480 724 610 724 C740 724 820 735 835 765" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" opacity="0.8" fill="none"/>
+    <path d="M370 776 C385 746 480 735 610 735 C740 735 825 746 840 776" stroke="#CBD5DF" stroke-width="2" stroke-linecap="round" opacity="0.6" fill="none"/>
+
+    <!-- ================= 5L PRODUCT FRONT LABEL ================= -->
+    <g id="label-panel-5L" transform="translate(405, 775)" filter="url(#crispShadow)">
+      <!-- Label Card Body -->
+      <rect x="0" y="0" width="395" height="345" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+      <rect x="8" y="8" width="379" height="329" rx="5" fill="none" stroke="#F1F5F9" stroke-width="1.2"/>
+
+      <!-- Top Border Wire with Brand Pill -->
+      <path d="M10 22 H140 M255 22 H385" stroke="#E11D48" stroke-width="1.5" stroke-linecap="round"/>
+      <rect x="145" y="12" width="105" height="20" rx="10" fill="#FFF1F2" stroke="#E11D48" stroke-width="1.2"/>
+      <rect x="157" y="18" width="81" height="8" rx="4" fill="url(#brandRedGrad)"/>
+
+      <!-- Logo Emblem (Top Left) -->
+      <g id="emblem-5L" transform="translate(18, 36)">
+        <circle cx="32" cy="32" r="28" fill="#FFFFFF" stroke="url(#brandRedGrad)" stroke-width="2.8"/>
+        <circle cx="32" cy="32" r="23" fill="none" stroke="#F43F5E" stroke-width="1.2" stroke-dasharray="2.5 1.5"/>
+        
+        <path d="M15 23 C21 16 43 16 49 23" stroke="#E11D48" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+        <path d="M17 41 C23 47 41 47 47 41" stroke="#E11D48" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+
+        <!-- Flask -->
+        <path d="M29 21 H35 M32 21 V28 L39 40 C40 43 38 45 34 45 H30 C26 45 24 43 25 40 L32 28" 
+              fill="url(#brandRedGrad)" stroke="#E11D48" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="32" cy="37" r="1.6" fill="#FFFFFF"/>
+        <circle cx="35" cy="40" r="1" fill="#FFFFFF"/>
+      </g>
+
+      <!-- Main Product Header Lines (5L) -->
+      <g id="typography-header-5L" transform="translate(90, 42)">
+        <rect x="0" y="0" width="280" height="18" rx="5" fill="#0F172A"/>
+        <rect x="10" y="24" width="260" height="9" rx="4.5" fill="url(#brandRedGrad)"/>
+        <rect x="45" y="37" width="190" height="8" rx="4" fill="url(#brandRedGrad)"/>
+      </g>
+
+      <!-- Description Block -->
+      <g transform="translate(18, 114)">
+        <rect x="0" y="0" width="358" height="5.5" rx="2.75" fill="#334155"/>
+        <rect x="0" y="10" width="345" height="5.5" rx="2.75" fill="#334155"/>
+        <rect x="0" y="20" width="300" height="5.5" rx="2.75" fill="#334155"/>
+      </g>
+
+      <!-- Section 1: DIRECTIONS -->
+      <g transform="translate(18, 154)">
+        <rect x="0" y="0" width="110" height="7.5" rx="3.75" fill="#0F172A"/>
+        <rect x="0" y="12" width="210" height="5" rx="2.5" fill="#64748B"/>
+        <rect x="0" y="20" width="195" height="5" rx="2.5" fill="#64748B"/>
+        <rect x="0" y="28" width="350" height="5" rx="2.5" fill="#64748B"/>
+      </g>
+
+      <!-- Section 2: CAUTION -->
+      <g transform="translate(18, 204)">
+        <rect x="0" y="0" width="55" height="7.5" rx="3.75" fill="#0F172A"/>
+        <rect x="0" y="11" width="355" height="5" rx="2.5" fill="#64748B"/>
+      </g>
+
+      <!-- Section 3: STORAGE -->
+      <g transform="translate(18, 238)">
+        <rect x="0" y="0" width="60" height="7.5" rx="3.75" fill="#0F172A"/>
+        <rect x="0" y="11" width="240" height="5" rx="2.5" fill="#64748B"/>
+      </g>
+
+      <!-- Disclaimer Lines -->
+      <g transform="translate(18, 274)" opacity="0.65">
+        <line x1="0" y1="0" x2="358" y2="0" stroke="#CBD5E1" stroke-width="1.2" stroke-linecap="round"/>
+        <rect x="15" y="8" width="328" height="4" rx="2" fill="#64748B"/>
+        <rect x="50" y="15" width="258" height="4" rx="2" fill="#64748B"/>
+      </g>
+
+      <!-- Bottom Address & Contact Info Bar + 5L Box Tag -->
+      <g transform="translate(18, 304)">
+        <rect x="0" y="0" width="295" height="28" rx="5" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+        <rect x="10" y="10" width="270" height="7" rx="3.5" fill="#64748B"/>
+
+        <!-- Premium "5L" Volume Badge Tag -->
+        <g transform="translate(305, -2)">
+          <rect x="0" y="0" width="54" height="30" rx="6" fill="#0F172A"/>
+          <text x="27" y="21" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">5L</text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

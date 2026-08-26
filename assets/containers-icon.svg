@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Styles for modern icon rendering -->
+    <linearGradient id="drumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3F6F9"/>
+      <stop offset="100%" stop-color="#DDE4EC"/>
+    </linearGradient>
+    <linearGradient id="jugGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E5ECF2"/>
+    </linearGradient>
+    <filter id="iconShadow" x="-10%" y="-10%" width="125%" height="125%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.12"/>
+    </filter>
+    <filter id="jugShadow" x="-15%" y="-15%" width="130%" height="130%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="-2" dy="3" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="115" cy="242" rx="95" ry="8" fill="#0F172A" fill-opacity="0.08"/>
+  <ellipse cx="180" cy="242" rx="45" ry="6" fill="#0F172A" fill-opacity="0.12"/>
+
+  <!-- ================= 25L CONTAINER (BACKGROUND) ================= -->
+  <g filter="url(#iconShadow)">
+    <!-- 25L Top Cap (Green) -->
+    <path d="M96 20 C96 16.5 98.5 14 102 14 H128 C131.5 14 134 16.5 134 20 V26 H96 V20 Z" fill="#10B981" stroke="#059669" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="111" y="10" width="8" height="6" rx="2" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+
+    <!-- 25L Container Body -->
+    <path d="M52 44
+             C52 34 60 30 76 26
+             C82 24.5 94 25 96 26
+             H134
+             C136 25 148 24.5 154 26
+             C170 30 178 34 178 44
+             C181 80 183 140 178 205
+             C176 226 164 236 142 238
+             H88
+             C66 236 54 226 52 205
+             C47 140 49 80 52 44 Z"
+          fill="url(#drumGrad)" stroke="#64748B" stroke-width="3" stroke-linejoin="round"/>
+
+    <!-- Top Molded Handles / Indentations of 25L -->
+    <path d="M68 35 C74 33 84 34 88 40 C90 43 90 48 88 50 C85 52 75 51 68 47 Z" fill="#CBD5E1" fill-opacity="0.6"/>
+    <path d="M162 35 C156 33 146 34 142 40 C140 43 140 48 142 50 C145 52 155 51 162 47 Z" fill="#CBD5E1" fill-opacity="0.6"/>
+    
+    <!-- 25L Label -->
+    <g transform="translate(68, 62)">
+      <!-- Label Background -->
+      <rect x="0" y="0" width="94" height="110" rx="3" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5"/>
+      <rect x="3" y="3" width="88" height="104" rx="1.5" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+
+      <!-- Top Logo Badge (Circular with Flask) -->
+      <circle cx="16" cy="16" r="9" fill="#FFF" stroke="#EF4444" stroke-width="1.5"/>
+      <circle cx="16" cy="16" r="7" fill="none" stroke="#EF4444" stroke-width="0.75" stroke-dasharray="1.5 1"/>
+      <path d="M14.5 12 H17.5 M16 12 V14.5 L18.5 18.5 C19 19.5 18 20.5 16.8 20.5 H15.2 C14 20.5 13 19.5 13.5 18.5 L16 14.5" 
+            fill="#EF4444" stroke="#EF4444" stroke-width="0.8" stroke-linejoin="round"/>
+
+      <!-- Product Title Placeholder (Header Lines) -->
+      <rect x="32" y="10" width="54" height="4" rx="2" fill="#0F172A"/>
+      <rect x="32" y="16" width="46" height="3" rx="1.5" fill="#EF4444"/>
+      <rect x="32" y="21" width="36" height="2" rx="1" fill="#EF4444"/>
+
+      <!-- Text Paragraphs as Simulated Lines -->
+      <!-- Intro paragraph -->
+      <line x1="8" y1="30" x2="86" y2="30" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="8" y1="34" x2="80" y2="34" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="8" y1="38" x2="65" y2="38" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+
+      <!-- Section 1 -->
+      <line x1="8" y1="46" x2="35" y2="46" stroke="#0F172A" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8" y1="51" x2="84" y2="51" stroke="#64748B" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="8" y1="55" x2="78" y2="55" stroke="#64748B" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="8" y1="59" x2="82" y2="59" stroke="#64748B" stroke-width="1.2" stroke-linecap="round"/>
+
+      <!-- Section 2 -->
+      <line x1="8" y1="67" x2="28" y2="67" stroke="#0F172A" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8" y1="72" x2="85" y2="72" stroke="#64748B" stroke-width="1.2" stroke-linecap="round"/>
+
+      <!-- Section 3 -->
+      <line x1="8" y1="80" x2="25" y2="80" stroke="#0F172A" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8" y1="85" x2="75" y2="85" stroke="#64748B" stroke-width="1.2" stroke-linecap="round"/>
+
+      <!-- Footer Bar -->
+      <line x1="6" y1="94" x2="88" y2="94" stroke="#CBD5E1" stroke-width="0.8"/>
+      <line x1="12" y1="99" x2="82" y2="99" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="20" y1="104" x2="74" y2="104" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- ================= 5L CONTAINER (FOREGROUND) ================= -->
+  <g filter="url(#jugShadow)">
+    <!-- 5L Left Cap (White Ribbed) -->
+    <path d="M127 122 C127 120 129 118 131 118 H147 C149 118 151 120 151 122 V132 H127 V122 Z" fill="#F8FAFC" stroke="#64748B" stroke-width="2" stroke-linejoin="round"/>
+    <line x1="133" y1="120" x2="133" y2="130" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="139" y1="120" x2="139" y2="130" stroke="#94A3B8" stroke-width="1.5"/>
+    <line x1="145" y1="120" x2="145" y2="130" stroke="#94A3B8" stroke-width="1.5"/>
+
+    <!-- 5L Bottle Body + Handle Outer Path -->
+    <path d="M129 132
+             H149
+             L152 142
+             C158 136 166 128 178 128
+             H194
+             C206 128 214 136 218 146
+             C221 154 220 168 220 178
+             L219 230
+             C218 240 210 246 198 246
+             H143
+             C131 246 123 240 122 230
+             L121 168
+             C121 152 125 142 129 132 Z"
+          fill="url(#jugGrad)" stroke="#475569" stroke-width="3" stroke-linejoin="round"/>
+
+    <!-- 5L Handle Cutout Hole (with Ergonomic Finger Grooves) -->
+    <path d="M165 142
+             C165 138 170 137 178 137
+             H194
+             C202 137 207 140 207 145
+             C207 150 203 153 200 155
+             C196 156 193 155 189 157
+             C185 158 183 156 179 157
+             C175 158 172 156 168 155
+             C165 153 165 148 165 142 Z"
+          fill="#DDE4EC" stroke="#475569" stroke-width="2.5" stroke-linejoin="round"/>
+
+    <!-- 5L Label -->
+    <g transform="translate(131, 168)">
+      <!-- Label Background -->
+      <rect x="0" y="0" width="77" height="66" rx="2" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2"/>
+      <rect x="2" y="2" width="73" height="62" rx="1" fill="none" stroke="#E2E8F0" stroke-width="0.8"/>
+
+      <!-- Logo Badge -->
+      <circle cx="12" cy="11" r="6.5" fill="#FFF" stroke="#EF4444" stroke-width="1.2"/>
+      <path d="M11 8.5 H13 M12 8.5 V10.2 L13.8 13 C14.2 13.6 13.5 14.3 12.6 14.3 H11.4 C10.5 14.3 9.8 13.6 10.2 13 L12 10.2" 
+            fill="#EF4444" stroke="#EF4444" stroke-width="0.6" stroke-linejoin="round"/>
+
+      <!-- Title Bars -->
+      <rect x="22" y="7" width="48" height="3.5" rx="1.5" fill="#0F172A"/>
+      <rect x="22" y="12" width="42" height="2.5" rx="1" fill="#EF4444"/>
+
+      <!-- Text Lines -->
+      <line x1="5" y1="19" x2="72" y2="19" stroke="#475569" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="5" y1="23" x2="68" y2="23" stroke="#475569" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="5" y1="27" x2="55" y2="27" stroke="#475569" stroke-width="1.2" stroke-linecap="round"/>
+
+      <line x1="5" y1="33" x2="25" y2="33" stroke="#0F172A" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="5" y1="37" x2="70" y2="37" stroke="#64748B" stroke-width="1" stroke-linecap="round"/>
+      <line x1="5" y1="41" x2="65" y2="41" stroke="#64748B" stroke-width="1" stroke-linecap="round"/>
+
+      <line x1="5" y1="47" x2="22" y2="47" stroke="#0F172A" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="5" y1="51" x2="68" y2="51" stroke="#64748B" stroke-width="1" stroke-linecap="round"/>
+
+      <!-- Bottom Tag "5L" box on label -->
+      <rect x="61" y="52" width="12" height="9" rx="1" fill="#F8FAFC" stroke="#0F172A" stroke-width="0.8"/>
+      <text x="67" y="59" font-family="system-ui, -apple-system, sans-serif" font-size="5.5" font-weight="800" fill="#0F172A" text-anchor="middle">5L</text>
+    </g>
+  </g>
+</svg>

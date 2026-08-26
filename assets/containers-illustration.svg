@@ -1,0 +1,464 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1280" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Ambient & Contact Shadows -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="16"/>
+      <feOffset dx="0" dy="18" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.18"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="jugDropShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
+      <feOffset dx="-8" dy="14" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.28"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="labelShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+
+    <!-- 25L Drum Shading Gradients -->
+    <linearGradient id="drumBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C5D0D9"/>
+      <stop offset="6%" stop-color="#E1E8EE"/>
+      <stop offset="18%" stop-color="#F7FAFC"/>
+      <stop offset="50%" stop-color="#FFFFFF"/>
+      <stop offset="82%" stop-color="#EAF0F4"/>
+      <stop offset="94%" stop-color="#D2DCE4"/>
+      <stop offset="100%" stop-color="#BAC6D0"/>
+    </linearGradient>
+
+    <linearGradient id="drumTopGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="40%" stop-color="#E6ECF2"/>
+      <stop offset="100%" stop-color="#D0DCE6"/>
+    </linearGradient>
+
+    <linearGradient id="drumGrooveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#BAC7D2"/>
+      <stop offset="50%" stop-color="#D8E2EA"/>
+      <stop offset="100%" stop-color="#F2F6F9"/>
+    </linearGradient>
+
+    <linearGradient id="drumBottomGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#DDE5EC" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#8F9EA9" stop-opacity="0.5"/>
+    </linearGradient>
+
+    <!-- Green Cap Gradients -->
+    <linearGradient id="greenCapGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0D6B2D"/>
+      <stop offset="25%" stop-color="#199946"/>
+      <stop offset="55%" stop-color="#22C55E"/>
+      <stop offset="85%" stop-color="#15803D"/>
+      <stop offset="100%" stop-color="#0A5222"/>
+    </linearGradient>
+
+    <linearGradient id="greenCapTopGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ADE80"/>
+      <stop offset="100%" stop-color="#16A34A"/>
+    </linearGradient>
+
+    <linearGradient id="spoutPlugGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E2E8F0"/>
+      <stop offset="50%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+
+    <!-- 5L Jug Gradients -->
+    <linearGradient id="jugBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#CAD5DF"/>
+      <stop offset="8%" stop-color="#EBF1F5"/>
+      <stop offset="22%" stop-color="#FFFFFF"/>
+      <stop offset="65%" stop-color="#FFFFFF"/>
+      <stop offset="88%" stop-color="#E2E9F0"/>
+      <stop offset="100%" stop-color="#BAC6D1"/>
+    </linearGradient>
+
+    <linearGradient id="jugHandleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D3DDE6"/>
+      <stop offset="20%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#EEF3F7"/>
+      <stop offset="100%" stop-color="#C2CED9"/>
+    </linearGradient>
+
+    <linearGradient id="whiteCapGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#CBD5E1"/>
+      <stop offset="35%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#F1F5F9"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+
+    <radialGradient id="drumHighlight" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ================= GROUND SHADOWS ================= -->
+  <g opacity="0.75">
+    <ellipse cx="430" cy="1200" rx="350" ry="32" fill="#0F172A" fill-opacity="0.14" filter="url(#softShadow)"/>
+    <ellipse cx="370" cy="1195" rx="270" ry="24" fill="#0F172A" fill-opacity="0.22" filter="url(#softShadow)"/>
+    <ellipse cx="650" cy="1225" rx="200" ry="22" fill="#0F172A" fill-opacity="0.32" filter="url(#softShadow)"/>
+    <ellipse cx="660" cy="1228" rx="140" ry="14" fill="#0F172A" fill-opacity="0.45"/>
+  </g>
+
+  <!-- ================= 25L INDUSTRIAL DRUM ================= -->
+  <g id="container-25L">
+    <!-- 25L Green Cap Assembly -->
+    <g id="drum-cap">
+      <!-- Cap Base / Neck -->
+      <path d="M380 95 C380 84 392 78 440 78 C488 78 500 84 500 95 L496 112 C496 116 484 120 440 120 C396 120 384 116 384 112 Z" fill="#0D6B2D"/>
+      
+      <!-- Main Green Cap Cylinder -->
+      <path d="M385 70 C385 64 398 56 440 56 C482 56 495 64 495 70 V92 C495 98 482 104 440 104 C398 104 385 98 385 92 Z" fill="url(#greenCapGrad)"/>
+      
+      <!-- Cap Top Ellipse -->
+      <ellipse cx="440" cy="70" rx="55" ry="14" fill="url(#greenCapTopGrad)" stroke="#22C55E" stroke-width="1.5"/>
+      
+      <!-- Cap Ribs (Vertical grip serrations) -->
+      <g stroke="#094A1F" stroke-width="2.5" opacity="0.6">
+        <line x1="392" y1="73" x2="392" y2="92"/>
+        <line x1="404" y1="78" x2="404" y2="98"/>
+        <line x1="418" y1="82" x2="418" y2="102"/>
+        <line x1="433" y1="84" x2="433" y2="104"/>
+        <line x1="447" y1="84" x2="447" y2="104"/>
+        <line x1="462" y1="82" x2="462" y2="102"/>
+        <line x1="476" y1="78" x2="476" y2="98"/>
+        <line x1="488" y1="73" x2="488" y2="92"/>
+      </g>
+      
+      <!-- White Pouring Spout / Tamper Clip on top of Cap -->
+      <path d="M432 40 C432 36 435 34 440 34 C445 34 448 36 448 40 L452 76 C452 82 447 88 440 88 C433 88 428 82 428 76 Z" fill="url(#spoutPlugGrad)" stroke="#B0BAC5" stroke-width="1.5"/>
+      <ellipse cx="440" cy="40" rx="8" ry="4" fill="#FFFFFF"/>
+      <path d="M437 54 H443 V68 H437 Z" fill="#94A3B8" opacity="0.4"/>
+    </g>
+
+    <!-- 25L Drum Main Body -->
+    <!-- Outer Contour -->
+    <path d="M220 102
+             C242 78 300 62 380 64
+             C390 64 394 72 400 84
+             C412 106 468 106 480 84
+             C486 72 490 64 500 64
+             C580 62 638 78 660 102
+             C720 148 760 270 750 490
+             C740 730 760 960 720 1110
+             C700 1170 640 1200 520 1206
+             C440 1210 320 1210 240 1206
+             C120 1200 60 1170 40 1110
+             C0 960 20 730 10 490
+             C0 270 40 148 100 102
+             C122 86 168 76 220 102 Z"
+          fill="url(#drumBodyGrad)"
+          stroke="#9AA8B4"
+          stroke-width="3.5"
+          filter="url(#softShadow)"/>
+
+    <!-- Drum Body 3D Highlights and Contour Insets -->
+    <path d="M220 102
+             C242 78 300 62 380 64
+             C390 64 394 72 400 84
+             C412 106 468 106 480 84
+             C486 72 490 64 500 64
+             C580 62 638 78 660 102
+             C720 148 760 270 750 490
+             C740 730 760 960 720 1110
+             C700 1170 640 1200 520 1206
+             C440 1210 320 1210 240 1206
+             C120 1200 60 1170 40 1110
+             C0 960 20 730 10 490
+             C0 270 40 148 100 102
+             C122 86 168 76 220 102 Z"
+          fill="url(#drumHighlight)"/>
+
+    <path d="M40 1110 C60 1170 120 1200 240 1206 C320 1210 440 1210 520 1206 C640 1200 700 1170 720 1110 L725 1130 C705 1195 640 1222 520 1226 C440 1230 320 1230 240 1226 C120 1222 55 1195 35 1130 Z" fill="url(#drumBottomGrad)"/>
+
+    <!-- Left & Right Molded Top Handles / Rib Indentations -->
+    <!-- Left Top Recessed Handle Ridge -->
+    <g id="left-top-grip" opacity="0.85">
+      <path d="M165 92 C195 82 250 82 270 105 C250 115 190 115 165 92 Z" fill="url(#drumGrooveGrad)" stroke="#B4C0CB" stroke-width="2"/>
+      <path d="M150 105 C175 92 275 92 300 118 C285 125 170 125 150 105 Z" fill="#9FB0BE" opacity="0.35"/>
+    </g>
+
+    <!-- Right Top Recessed Handle Ridge -->
+    <g id="right-top-grip" opacity="0.85">
+      <path d="M595 92 C565 82 510 82 490 105 C510 115 570 115 595 92 Z" fill="url(#drumGrooveGrad)" stroke="#B4C0CB" stroke-width="2"/>
+      <path d="M610 105 C585 92 485 92 460 118 C475 125 590 125 610 105 Z" fill="#9FB0BE" opacity="0.35"/>
+    </g>
+
+    <!-- Molded Shoulder Bevel Lines -->
+    <path d="M70 250 C120 230 250 215 440 215 C630 215 700 230 730 250" stroke="#FFFFFF" stroke-width="4" opacity="0.6" fill="none"/>
+    <path d="M60 260 C110 240 250 225 440 225 C630 225 710 240 740 260" stroke="#CBD5DF" stroke-width="2" opacity="0.5" fill="none"/>
+
+    <!-- ================= 25L LABEL ================= -->
+    <g id="label-25L" transform="translate(160, 310)" filter="url(#labelShadow)">
+      <!-- Label Background Paper -->
+      <rect x="0" y="0" width="470" height="520" rx="6" fill="#FFFFFF" stroke="#BAC6D1" stroke-width="2.5"/>
+      <rect x="10" y="10" width="450" height="500" rx="3" fill="none" stroke="#E2E8F0" stroke-width="1.5"/>
+
+      <!-- Label Top Center Brand Box Wire -->
+      <path d="M12 28 H170 M300 28 H458" stroke="#D32F2F" stroke-width="2"/>
+      <rect x="175" y="18" width="120" height="20" rx="2" fill="#FFFFFF"/>
+      <rect x="185" y="24" width="100" height="8" rx="4" fill="#D32F2F"/>
+
+      <!-- Logo Badge (Top Left Circular Emblem) -->
+      <g id="logo-badge-25L" transform="translate(24, 38)">
+        <!-- Outer Concentric Red Rings -->
+        <circle cx="46" cy="46" r="42" fill="#FFFFFF" stroke="#D32F2F" stroke-width="4"/>
+        <circle cx="46" cy="46" r="35" fill="none" stroke="#D32F2F" stroke-width="1.8" stroke-dasharray="4 2.5"/>
+        
+        <!-- Logo Arched Text Representation (Upper & Lower Bars) -->
+        <path d="M22 34 C30 24 62 24 70 34" stroke="#D32F2F" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <path d="M25 60 C32 68 60 68 67 60" stroke="#D32F2F" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+        <!-- Central Chemical Flask / Erlenmeyer Vessel -->
+        <path d="M42 32 H50 M46 32 V41 L55 58 C57 62 54 65 49 65 H43 C38 65 35 62 37 58 L46 41" 
+              fill="#D32F2F" stroke="#D32F2F" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="46" cy="53" r="2.5" fill="#FFFFFF"/>
+        <circle cx="50" cy="58" r="1.8" fill="#FFFFFF"/>
+        
+        <!-- Cross / Hazard Accents on Logo Edge -->
+        <line x1="6" y1="46" x2="16" y2="46" stroke="#D32F2F" stroke-width="3" stroke-linecap="round"/>
+        <line x1="76" y1="46" x2="86" y2="46" stroke="#D32F2F" stroke-width="3" stroke-linecap="round"/>
+      </g>
+
+      <!-- Main Product Header Lines -->
+      <g id="header-lines-25L" transform="translate(130, 48)">
+        <!-- Primary Bold Product Title Bar (DISH "O" MAX representation) -->
+        <rect x="0" y="0" width="310" height="24" rx="4" fill="#0F172A"/>
+        
+        <!-- Secondary Subtitle Bar (Red Category Headline) -->
+        <rect x="15" y="32" width="280" height="12" rx="3" fill="#D32F2F"/>
+        <rect x="55" y="49" width="200" height="10" rx="3" fill="#D32F2F"/>
+      </g>
+
+      <!-- Description Block (3 Lines) -->
+      <g transform="translate(24, 150)">
+        <rect x="0" y="0" width="422" height="7" rx="3.5" fill="#334155"/>
+        <rect x="0" y="13" width="405" height="7" rx="3.5" fill="#334155"/>
+        <rect x="0" y="26" width="360" height="7" rx="3.5" fill="#334155"/>
+      </g>
+
+      <!-- Section 1: DIRECTIONS FOR USE -->
+      <g transform="translate(24, 205)">
+        <!-- Section Header -->
+        <rect x="0" y="0" width="130" height="9" rx="3" fill="#0F172A"/>
+        <!-- Bullet Lines -->
+        <rect x="0" y="16" width="250" height="6" rx="3" fill="#64748B"/>
+        <rect x="0" y="27" width="235" height="6" rx="3" fill="#64748B"/>
+        <rect x="0" y="38" width="410" height="6" rx="3" fill="#64748B"/>
+      </g>
+
+      <!-- Section 2: CAUTION -->
+      <g transform="translate(24, 275)">
+        <!-- Section Header -->
+        <rect x="0" y="0" width="65" height="9" rx="3" fill="#0F172A"/>
+        <!-- Content Lines -->
+        <rect x="0" y="15" width="415" height="6" rx="3" fill="#64748B"/>
+        <rect x="0" y="26" width="110" height="6" rx="3" fill="#64748B"/>
+      </g>
+
+      <!-- Section 3: STORAGE -->
+      <g transform="translate(24, 332)">
+        <!-- Section Header -->
+        <rect x="0" y="0" width="70" height="9" rx="3" fill="#0F172A"/>
+        <!-- Content Line -->
+        <rect x="0" y="15" width="290" height="6" rx="3" fill="#64748B"/>
+      </g>
+
+      <!-- Disclaimer Fine Lines -->
+      <g transform="translate(24, 400)" opacity="0.7">
+        <line x1="0" y1="0" x2="422" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
+        <rect x="25" y="12" width="372" height="4.5" rx="2" fill="#64748B"/>
+        <rect x="70" y="21" width="282" height="4.5" rx="2" fill="#64748B"/>
+      </g>
+
+      <!-- Bottom Address & Contact Info Bar -->
+      <g transform="translate(24, 455)">
+        <rect x="0" y="0" width="422" height="32" rx="3" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5"/>
+        <rect x="18" y="12" width="386" height="8" rx="4" fill="#64748B"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ================= 5L CONTAINER (FOREGROUND JERRY CAN) ================= -->
+  <g id="container-5L">
+    <!-- Cast Shadow onto 25L Drum & Ground -->
+    <path d="M370 590
+             C390 565 435 560 480 560
+             H740
+             C790 560 830 600 840 650
+             L840 1200
+             C840 1240 780 1260 700 1260
+             H420
+             C360 1260 350 1210 350 1170
+             L350 650
+             C350 610 360 595 370 590 Z"
+          fill="#000000"
+          opacity="0.25"
+          filter="url(#jugDropShadow)"/>
+
+    <!-- 5L Left Spout & Threaded Cap -->
+    <g id="jug-cap" transform="translate(385, 570)">
+      <!-- Neck Base Collar -->
+      <path d="M5 45 C5 38 15 32 45 32 C75 32 85 38 85 45 V52 H5 Z" fill="#CBD5E1"/>
+      
+      <!-- White Ribbed Screw Cap -->
+      <rect x="3" y="2" width="84" height="42" rx="6" fill="url(#whiteCapGrad)" stroke="#94A3B8" stroke-width="2"/>
+      
+      <!-- Vertical Cap Ribs (Grip texture) -->
+      <g stroke="#94A3B8" stroke-width="2.5" opacity="0.7">
+        <line x1="15" y1="4" x2="15" y2="42"/>
+        <line x1="26" y1="4" x2="26" y2="42"/>
+        <line x1="38" y1="4" x2="38" y2="42"/>
+        <line x1="50" y1="4" x2="50" y2="42"/>
+        <line x1="62" y1="4" x2="62" y2="42"/>
+        <line x1="74" y1="4" x2="74" y2="42"/>
+      </g>
+      
+      <!-- Cap Top Dome -->
+      <ellipse cx="45" cy="4" rx="42" ry="7" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    </g>
+
+    <!-- 5L Main Body & Handle Outer Hull -->
+    <path d="M390 622
+             H475
+             L490 645
+             C505 615 540 575 605 575
+             H725
+             C790 575 830 615 845 675
+             C855 720 850 780 850 830
+             L846 1160
+             C842 1215 805 1250 735 1252
+             H475
+             C405 1252 368 1215 365 1160
+             L360 830
+             C360 740 375 660 390 622 Z"
+          fill="url(#jugBodyGrad)"
+          stroke="#9AA8B4"
+          stroke-width="3"
+          filter="url(#softShadow)"/>
+
+    <!-- 5L Ergonomic Handle Cutout Hole (with 3 finger indentations underneath) -->
+    <path d="M570 655
+             C570 635 595 625 635 625
+             H720
+             C760 625 780 638 780 660
+             C780 685 765 696 750 700
+             C730 706 715 700 695 708
+             C675 715 665 702 645 708
+             C625 715 610 702 590 700
+             C575 695 570 680 570 655 Z"
+          fill="#D6E0EA"
+          stroke="#8C9CA9"
+          stroke-width="3"
+          stroke-linejoin="round"/>
+
+    <!-- Inner Shadow & Highlight for Handle Grip Hole -->
+    <path d="M570 655 C570 635 595 625 635 625 H720 C760 625 780 638 780 660" 
+          stroke="#7A8B99" stroke-width="4" fill="none" opacity="0.6"/>
+    <path d="M780 660 C780 685 765 696 750 700 C730 706 715 700 695 708 C675 715 665 702 645 708 C625 715 610 702 590 700 C575 695 570 680 570 655" 
+          stroke="#FFFFFF" stroke-width="3" fill="none" opacity="0.8"/>
+
+    <!-- 5L Shoulder & Contour Highlights -->
+    <path d="M375 790 C390 760 480 750 610 750 C740 750 820 760 835 790" stroke="#FFFFFF" stroke-width="4" opacity="0.7" fill="none"/>
+    <path d="M370 802 C385 772 480 762 610 762 C740 762 825 772 840 802" stroke="#CBD5DF" stroke-width="2" opacity="0.6" fill="none"/>
+
+    <!-- 5L Bottom Base Shadow -->
+    <path d="M366 1160 C368 1215 405 1252 475 1252 H735 C805 1252 842 1215 846 1160 L850 1175 C845 1235 805 1265 735 1265 H475 C405 1265 365 1235 362 1175 Z" fill="#8494A2" opacity="0.5"/>
+
+    <!-- ================= 5L FRONT LABEL ================= -->
+    <g id="label-5L" transform="translate(405, 805)" filter="url(#labelShadow)">
+      <!-- Label Background -->
+      <rect x="0" y="0" width="395" height="350" rx="5" fill="#FFFFFF" stroke="#BAC6D1" stroke-width="2"/>
+      <rect x="8" y="8" width="379" height="334" rx="3" fill="none" stroke="#E2E8F0" stroke-width="1.2"/>
+
+      <!-- Label Top Center Brand Box Wire -->
+      <path d="M10 22 H140 M255 22 H385" stroke="#D32F2F" stroke-width="1.5"/>
+      <rect x="145" y="14" width="105" height="16" rx="2" fill="#FFFFFF"/>
+      <rect x="155" y="19" width="85" height="6" rx="3" fill="#D32F2F"/>
+
+      <!-- Logo Badge (Top Left Circular Emblem) -->
+      <g id="logo-badge-5L" transform="translate(18, 30)">
+        <circle cx="34" cy="34" r="30" fill="#FFFFFF" stroke="#D32F2F" stroke-width="3"/>
+        <circle cx="34" cy="34" r="25" fill="none" stroke="#D32F2F" stroke-width="1.2" stroke-dasharray="3 2"/>
+        
+        <path d="M16 25 C22 17 46 17 52 25" stroke="#D32F2F" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M18 44 C24 51 44 51 50 44" stroke="#D32F2F" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+        <!-- Flask -->
+        <path d="M31 23 H37 M34 23 V30 L41 43 C42 46 40 48 36 48 H32 C28 48 26 46 27 43 L34 30" 
+              fill="#D32F2F" stroke="#D32F2F" stroke-width="1.8" stroke-linejoin="round"/>
+        <circle cx="34" cy="39" r="1.8" fill="#FFFFFF"/>
+        <circle cx="37" cy="43" r="1.2" fill="#FFFFFF"/>
+      </g>
+
+      <!-- Main Product Header Lines (5L) -->
+      <g id="header-lines-5L" transform="translate(95, 36)">
+        <rect x="0" y="0" width="275" height="18" rx="3.5" fill="#0F172A"/>
+        <rect x="10" y="24" width="255" height="9" rx="2.5" fill="#D32F2F"/>
+        <rect x="45" y="37" width="180" height="8" rx="2" fill="#D32F2F"/>
+      </g>
+
+      <!-- Description Block (3 Lines) -->
+      <g transform="translate(18, 108)">
+        <rect x="0" y="0" width="358" height="5.5" rx="2.5" fill="#334155"/>
+        <rect x="0" y="10" width="345" height="5.5" rx="2.5" fill="#334155"/>
+        <rect x="0" y="20" width="300" height="5.5" rx="2.5" fill="#334155"/>
+      </g>
+
+      <!-- Section 1: DIRECTIONS -->
+      <g transform="translate(18, 148)">
+        <rect x="0" y="0" width="110" height="7.5" rx="2.5" fill="#0F172A"/>
+        <rect x="0" y="12" width="210" height="5" rx="2.5" fill="#64748B"/>
+        <rect x="0" y="20" width="195" height="5" rx="2.5" fill="#64748B"/>
+        <rect x="0" y="28" width="350" height="5" rx="2.5" fill="#64748B"/>
+      </g>
+
+      <!-- Section 2: CAUTION -->
+      <g transform="translate(18, 200)">
+        <rect x="0" y="0" width="55" height="7.5" rx="2.5" fill="#0F172A"/>
+        <rect x="0" y="11" width="355" height="5" rx="2.5" fill="#64748B"/>
+      </g>
+
+      <!-- Section 3: STORAGE -->
+      <g transform="translate(18, 235)">
+        <rect x="0" y="0" width="60" height="7.5" rx="2.5" fill="#0F172A"/>
+        <rect x="0" y="11" width="240" height="5" rx="2.5" fill="#64748B"/>
+      </g>
+
+      <!-- Disclaimer & Footer -->
+      <g transform="translate(18, 275)" opacity="0.75">
+        <line x1="0" y1="0" x2="358" y2="0" stroke="#CBD5E1" stroke-width="1.2"/>
+        <rect x="15" y="8" width="328" height="4" rx="2" fill="#64748B"/>
+        <rect x="50" y="15" width="258" height="4" rx="2" fill="#64748B"/>
+      </g>
+
+      <!-- Bottom Address & Contact Info Bar + 5L Box Tag -->
+      <g transform="translate(18, 306)">
+        <!-- Address info line placeholder -->
+        <rect x="0" y="0" width="295" height="26" rx="2.5" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+        <rect x="10" y="9" width="270" height="7" rx="3.5" fill="#64748B"/>
+
+        <!-- "5L" Volume Badge Box (matching the PNG) -->
+        <g transform="translate(305, -4)">
+          <rect x="0" y="0" width="52" height="30" rx="3" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+          <text x="26" y="21" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="900" fill="#0F172A" text-anchor="middle" letter-spacing="0.5">5L</text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
