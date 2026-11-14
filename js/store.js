@@ -47,7 +47,8 @@ async function start() {
   }
 
   // navigation.js shares this request with the dropdown.
-  const products = await (window.rangechemProducts || api('/api/products'));
+  const [products, settings] = await Promise.all([window.rangechemProducts || api('/api/products'), api('/api/settings').catch(() => ({}))]);
+  RC.setCategoryImages(settings.category_images);
   const cats = [...new Set(products.map(p => p.category))].sort();
 
   if (page === 'categories') {
@@ -248,9 +249,10 @@ function quotePage(products) {
     e.preventDefault(); const button = $('#submit-quote'); if (button.disabled) return;
     button.disabled = true; button.textContent = 'Sending request...';
     try {
-      await api('/api/quote', {customer:Object.fromEntries(new FormData(e.target)), items:cart()});
+      const email = new FormData(e.target).get('email');
+      const result = await api('/api/quote', {customer:Object.fromEntries(new FormData(e.target)), items:cart()});
       saveCart([]); render(); e.target.reset();
-      e.target.innerHTML = '<div class="success-card"><svg class="check" width="72" height="72" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none" stroke="#1f7a4d" stroke-width="3"/><path d="M15 27l7 7 15-16" fill="none" stroke="#1f7a4d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><h2>Request received</h2><p>Thank you. Our team will be in touch shortly with your quote.</p><a class="button" href="categories.html">Continue browsing</a></div>';
+      e.target.innerHTML = `<div class="success-card"><svg class="check" width="72" height="72" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none" stroke="#1f7a4d" stroke-width="3"/><path d="M15 27l7 7 15-16" fill="none" stroke="#1f7a4d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><h2>Request received</h2>${result.reference ? `<p><strong>Reference ${esc(result.reference)}</strong></p>` : ''}<p>Thank you. Our team will be in touch shortly with your quote.${result.emailed ? ` A confirmation with your quote attached is on its way to ${esc(email)}.` : ''}</p><a class="button" href="categories.html">Continue browsing</a></div>`;
       notify('Quote request sent');
       window.scrollTo({top: 0, behavior: RC.reduceMotion() ? 'auto' : 'smooth'});
     } catch (error) { $('#status').textContent = error.message; button.textContent = 'Submit quote request →'; summary(); }

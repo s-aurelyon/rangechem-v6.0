@@ -1,7 +1,8 @@
 import base64, hmac, json, os, re, secrets, sqlite3, sys, time
 from collections import defaultdict, deque
-from threading import Lock
+from threading import Lock, Thread
 from contextlib import closing
+import xml.etree.ElementTree as ElementTree
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -10,8 +11,10 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / '.local' / 'python'))
 from flask import Flask, request, jsonify, send_file, abort
 from werkzeug.exceptions import HTTPException
+import mailer
 
 os.chdir(ROOT)
+MAIL_SYNC = False  # tests set this so emails are sent before the response returns
 MYSQL = os.getenv('DB_ENGINE', 'sqlite') == 'mysql'
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', '')
 
@@ -128,6 +131,9 @@ def response_headers(response):
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
     response.headers['Content-Security-Policy'] = "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    if request.path.startswith('/assets/uploads/'):
+        # Uploaded SVGs must never run script, even if opened directly.
+        response.headers['Content-Security-Policy'] = "default-src 'none'; img-src data:; style-src 'unsafe-inline'; sandbox"
     if request.path.startswith('/api/') or request.path == '/admin.html':
         response.headers['Cache-Control'] = 'no-store'
     if PRODUCTION:
@@ -218,9 +224,16 @@ def submit_quote():
                 abort(400, description='A selected product is no longer available. Remove it and try again.')
             clean.append({**dict(product),'quantity':item['quantity']})
             seen.add(item['id'])
-        query(db, 'INSERT INTO quotes (created,customer,items) VALUES (?,?,?)', (datetime.now(timezone.utc).isoformat(),json.dumps(customer),json.dumps(clean)))
+        created = datetime.now(timezone.utc)
+        quote_id = query(db, 'INSERT INTO quotes (created,customer,items) VALUES (?,?,?)', (created.isoformat(),json.dumps(customer),json.dumps(clean))).lastrowid
         db.commit()
-    return jsonify(ok=True)
+    # The quote is already saved; email problems never fail the request.
+    emailing = mailer.config() is not None
+    if emailing:
+        args = (quote_id, customer, clean, created.strftime('%d %b %Y, %H:%M UTC'))
+        if MAIL_SYNC: mailer.send_quote_emails(*args)
+        else: Thread(target=mailer.send_quote_emails, args=args, daemon=True).start()
+    return jsonify(ok=True, reference=mailer.reference(quote_id), emailed=emailing)
 
 
 @app.post('/api/product')
@@ -264,15 +277,52 @@ def save_settings():
     return jsonify(ok=True)
 
 
+@app.post('/api/category-image')
+def save_category_image():
+    data = payload()
+    category = text_field(data, 'category', 255, True)
+    image = image_path(text_field(data, 'image', 2000))
+    with closing(connect()) as db:
+        if not query(db, 'SELECT id FROM products WHERE category=?', (category,)).fetchone():
+            abort(404, description='Category not found.')
+        row = query(db, 'SELECT value FROM settings WHERE name=?', ('category_images',)).fetchone()
+        try: mapping = json.loads(row['value']) if row else {}
+        except ValueError: mapping = {}
+        if image: mapping[category] = image
+        else: mapping.pop(category, None)
+        query(db, 'DELETE FROM settings WHERE name=?', ('category_images',))
+        query(db, 'INSERT INTO settings (name,value) VALUES (?,?)', ('category_images', json.dumps(mapping)))
+        db.commit()
+    return jsonify(ok=True, category_images=mapping)
+
+
+def safe_svg(raw):
+    """Accept only plain, script-free SVG graphics."""
+    try:
+        text = raw.decode('utf-8-sig')
+        low = text.lower()
+        root = ElementTree.fromstring(text)  # rejects malformed XML; DOCTYPE/ENTITY are refused below
+    except (UnicodeDecodeError, ElementTree.ParseError):
+        return False
+    banned = ('<!doctype', '<!entity', '<script', '<foreignobject', '<iframe', '<object', '<embed', '<animate', '<set ', 'javascript:', 'data:text', '@import', 'expression(')
+    return (root.tag.rsplit('}', 1)[-1] == 'svg' and not any(b in low for b in banned)
+            and not re.search(r'\son[a-z]+\s*=', low)
+            and not re.search(r'href\s*=\s*["\'](?!#)', low)
+            and not re.search(r'url\(\s*["\']?(?!#|data:image/)', low))
+
+
 @app.post('/api/upload')
 def upload():
     data = payload()
     ext = Path(text_field(data,'name',255,True)).suffix.lower()
-    signatures = {'.png':b'\x89PNG\r\n\x1a\n','.jpg':b'\xff\xd8\xff','.jpeg':b'\xff\xd8\xff','.gif':b'GIF8','.webp':b'RIFF'}
+    signatures = {'.png':b'\x89PNG\r\n\x1a\n','.jpg':b'\xff\xd8\xff','.jpeg':b'\xff\xd8\xff','.gif':b'GIF8','.webp':b'RIFF','.svg':None}
     if ext not in signatures:
-        abort(400, description='Choose a PNG, JPEG, GIF or WebP image.')
+        abort(400, description='Choose a PNG, JPEG, GIF, WebP or SVG image.')
     raw = base64.b64decode(data['content'], validate=True)
-    if len(raw) > 5_000_000 or not raw.startswith(signatures[ext]) or (ext == '.webp' and raw[8:12] != b'WEBP'):
+    if ext == '.svg':
+        if len(raw) > 1_000_000 or not safe_svg(raw):
+            abort(400, description='Choose a plain SVG under 1 MB without scripts or external links.')
+    elif len(raw) > 5_000_000 or not raw.startswith(signatures[ext]) or (ext == '.webp' and raw[8:12] != b'WEBP'):
         abort(400, description='Choose a valid image smaller than 5 MB.')
     dest = ROOT / 'assets' / 'uploads'
     dest.mkdir(exist_ok=True)

@@ -6,3 +6,4 @@ data/*.db
 assets/product_images/
 
 assets/uploads/
+dist/

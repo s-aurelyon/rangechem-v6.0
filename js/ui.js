@@ -89,7 +89,14 @@
   }
 
   const categoryImages = {'Auto':'auto','Bathroom':'bathroom','Consumables':'consumables','Fabric Care':'fabric-care','Floorcare':'floorcare','General Cleaning':'general-cleaning','Industrial Cleaning':'industrial-cleaning','Janitorial':'janitorial','Kitchen':'kitchen','Laundry':'laundry','PPE & Safety':'ppe-safety'};
-  const categoryImage = name => `assets/categories/${categoryImages[name] || 'category'}.svg`;
+  let customCategoryImages = {};
+  // Staff can replace a category illustration in the admin; those choices arrive via /api/settings.
+  const setCategoryImages = value => {
+    try { const map = typeof value === 'string' ? JSON.parse(value || '{}') : value; customCategoryImages = map && typeof map === 'object' ? map : {}; }
+    catch { customCategoryImages = {}; }
+  };
+  const defaultCategoryImage = name => `assets/categories/${categoryImages[name] || 'category'}.svg`;
+  const categoryImage = name => customCategoryImages[name] || defaultCategoryImage(name);
 
   /* Fade product images in once loaded; swap to a placeholder if one fails. */
   const noImage = '<span class="image-placeholder">Image coming soon</span>';
@@ -107,5 +114,5 @@
 
   ensureToast();
   backToTop();
-  window.RC = { toast, flyToQuote, bumpQuote, categoryImage, reduceMotion, watchImages, noImage };
+  window.RC = { toast, flyToQuote, bumpQuote, categoryImage, defaultCategoryImage, setCategoryImages, reduceMotion, watchImages, noImage };
 })();

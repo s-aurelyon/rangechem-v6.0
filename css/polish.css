@@ -155,12 +155,23 @@ button.cat-tile:hover .category-media img{transform:scale(1.07)}
 .admin-card .card-body{padding:16px 18px 18px;gap:2px}
 .admin-card h3{margin:4px 0 6px;font-size:.92rem;min-height:2.6em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .admin-card .product-meta{min-height:0}
-.admin-card .edit-btn{position:absolute;top:10px;right:10px;z-index:2;width:38px;height:38px;background:#fff;box-shadow:0 4px 14px #0003;border:0;color:var(--ink);opacity:.92}
-.admin-card .edit-btn:hover{background:var(--red);color:#fff;transform:scale(1.1) rotate(-8deg)}
+.admin-card .edit-btn,.cat-wrap .edit-btn{position:absolute;top:10px;right:10px;z-index:2;width:38px;height:38px;background:#fff;box-shadow:0 4px 14px #0003;border:0;color:var(--ink);opacity:.92}
+.admin-card .edit-btn:hover,.cat-wrap .edit-btn:hover{background:var(--red);color:#fff;transform:scale(1.1) rotate(-8deg)}
 .pill{display:inline-flex;align-items:center;background:#fff4e5;color:#b8620a;font-size:.62rem;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:999px}
 .admin-card .pill{position:absolute;left:10px;top:14px;z-index:2}
 .pill.ok{background:#e6f4ec;color:var(--green)}
 .admin-more{text-align:center;margin-top:30px}
+
+/* category tile wrapper (holds the open button and the change-image button) */
+.cat-wrap{position:relative;display:flex}
+.cat-wrap .cat-tile{flex:1;width:100%}
+.cat-wrap .edit-btn{position:absolute;top:10px;right:10px;z-index:2;width:38px;height:38px;background:#fff;box-shadow:0 4px 14px #0003;border:0;color:var(--ink)}
+.quote-ref{display:inline-block;margin-left:6px;font-size:.66rem;font-weight:800;letter-spacing:.06em;color:#ad291c;background:#fdeceb;border-radius:999px;padding:2px 8px;vertical-align:middle}
+dialog.modal-small{width:min(480px,calc(100vw - 24px))}
+.modal-body.single{display:flex;flex-direction:column;gap:12px}
+.modal-body.single label{display:flex;flex-direction:column;gap:7px;font-size:.78rem;font-weight:700}
+.wide-preview{aspect-ratio:auto;height:200px}
+.modal-body.single .preview-note{margin:0}
 
 /* quote requests */
 .quote-list{display:grid;gap:14px}

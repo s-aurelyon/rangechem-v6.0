@@ -6,6 +6,7 @@ from pathlib import Path
 import tempfile
 import unittest
 import server
+import mailer
 
 
 class SiteTests(unittest.TestCase):
@@ -105,6 +106,83 @@ class SiteTests(unittest.TestCase):
         first = self.client.get('/api/products').json
         second = self.client.get('/api/products').json
         self.assertEqual([p['display_image'] for p in first], [p['display_image'] for p in second])
+
+    def test_category_image_requires_auth_and_validates(self):
+        category = self.product['category']
+        self.assertEqual(self.client.post('/api/category-image', json={'category':category,'image':'assets/x.svg'}).status_code, 401)
+        self.assertEqual(self.client.post('/api/category-image', json={'category':'Nope','image':''}, headers=self.auth).status_code, 404)
+        self.assertEqual(self.client.post('/api/category-image', json={'category':category,'image':'javascript:alert(1)'}, headers=self.auth).status_code, 400)
+        saved = self.client.post('/api/category-image', json={'category':category,'image':'assets/uploads/a.svg'}, headers=self.auth)
+        self.assertEqual(saved.json['category_images'], {category:'assets/uploads/a.svg'})
+        self.assertEqual(json.loads(self.client.get('/api/settings').json['category_images']), {category:'assets/uploads/a.svg'})
+        cleared = self.client.post('/api/category-image', json={'category':category,'image':''}, headers=self.auth)
+        self.assertEqual(cleared.json['category_images'], {})
+
+    def test_svg_upload_accepts_plain_and_rejects_scripts(self):
+        def up(svg): return self.client.post('/api/upload', json={'name':'icon.svg','content':base64.b64encode(svg.encode()).decode()}, headers=self.auth)
+        ok = up('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#d63121"/></svg>')
+        self.assertEqual(ok.status_code, 200)
+        self.assertTrue(ok.json['path'].endswith('.svg'))
+        served = self.client.get('/' + ok.json['path'])
+        self.assertIn('sandbox', served.headers['Content-Security-Policy'])
+        served.close()
+        (server.ROOT / ok.json['path']).unlink()
+        for bad in ['<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>',
+                    '<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"/>',
+                    '<svg xmlns="http://www.w3.org/2000/svg"><a href="https://evil.example"><rect/></a></svg>',
+                    '<!DOCTYPE svg [<!ENTITY x "y">]><svg xmlns="http://www.w3.org/2000/svg"/>',
+                    '<html><body>not svg</body></html>', 'not xml at all']:
+            self.assertEqual(up(bad).status_code, 400, bad)
+
+    def test_quote_sends_confirmation_with_pdf_and_staff_copy(self):
+        sent = []
+        class FakeSMTP:
+            def __init__(self, *a, **k): pass
+            def __enter__(self): return self
+            def __exit__(self, *a): return False
+            def login(self, *a): pass
+            def send_message(self, message): sent.append(message)
+        env = {'SMTP_HOST':'mail.test','MAIL_FROM':'quotes@rangechem.test','MAIL_NOTIFY':'sales@rangechem.test','SMTP_USER':'u','SMTP_PASSWORD':'p'}
+        old_env = {k: os.environ.get(k) for k in env}
+        old_smtp, server.MAIL_SYNC = mailer.smtplib.SMTP_SSL, True
+        os.environ.update(env); mailer.smtplib.SMTP_SSL = FakeSMTP
+        try:
+            data = self.quote(3); data['customer']['name'] = 'Test\r\nBcc: evil@example.com'
+            response = self.client.post('/api/quote', json=data)
+        finally:
+            mailer.smtplib.SMTP_SSL, server.MAIL_SYNC = old_smtp, False
+            for k, v in old_env.items():
+                if v is None: os.environ.pop(k, None)
+                else: os.environ[k] = v
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json['emailed']); self.assertRegex(response.json['reference'], r'^RC-\d{5}$')
+        self.assertEqual(len(sent), 2)
+        client, staff = sent
+        self.assertEqual(client['To'], 'test@example.com'); self.assertEqual(staff['To'], 'sales@rangechem.test')
+        self.assertIn('quotes@rangechem.test', client['From']); self.assertIsNone(client['Bcc']); self.assertIsNone(staff['Bcc']); self.assertNotIn('\n', str(staff['Subject']))
+        attachments = list(client.iter_attachments())
+        self.assertEqual(attachments[0].get_content_type(), 'application/pdf')
+        self.assertTrue(attachments[0].get_content().startswith(b'%PDF'))
+        self.assertIn(self.product['name'], client.get_body(('plain',)).get_content())
+
+    def test_quote_without_mail_settings_still_succeeds(self):
+        for key in ('SMTP_HOST', 'MAIL_FROM'): os.environ.pop(key, None)
+        response = self.client.post('/api/quote', json=self.quote())
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json['emailed'])
+
+    def test_html_attachment_fallback_without_reportlab(self):
+        original = mailer.quote_pdf
+        mailer.quote_pdf = lambda *a, **k: None
+        try:
+            client, _ = mailer.build_messages({'sender':'q@r.test','notify':['s@r.test']}, 'RC-00001', {'name':'A <b>','email':'a@b.co'}, [{'name':'X','size':'1L','stock_code':'Z','quantity':2}], 'now')
+        finally:
+            mailer.quote_pdf = original
+        attachment = next(client.iter_attachments())
+        self.assertEqual(attachment.get_content_type(), 'text/html')
+        body = attachment.get_content()
+        self.assertIn('A &lt;b&gt;', body)  # customer text is HTML-escaped
+        self.assertNotIn('A <b>', body)
 
 
 if __name__ == '__main__': unittest.main()

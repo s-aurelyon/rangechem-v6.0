@@ -1,14 +1,31 @@
 # Rangechem Website – Documentation & Customisation Guide
 
-## Catalogue and quote system
+Catalogue and quote-request website for Rangechem. Flask app (`server.py`) serving static pages and a JSON API, with SQLite locally and MariaDB/MySQL in production. For AI agents and contributors see [AGENTS.md](AGENTS.md); for hosting see [DEPLOYMENT.md](DEPLOYMENT.md).
 
-Run `python server.py` from this directory and open `http://127.0.0.1:8000`. The default local test database is SQLite, created on first launch from `data/products.json`. Opening the HTML files directly will not run the catalogue. Set `ADMIN_PASSWORD` before starting the server and open `/admin.html`; the username is `admin`. The management panel edits products, sizes, tags, categories, images and homepage hero content, and displays submitted quote requests. Requests are stored in the database for staff to review; email delivery is not configured.
+## Quick start (local)
 
-The image matcher checks filenames in `assets/product_images` for the complete stock code, ignoring case. If multiple filenames match, the alphabetically first is used. Add an image to that folder and it will be picked up automatically. An image path or upload saved on the product overrides matching; clear the field to restore it. Products without a matching image show a placeholder.
+```powershell
+$env:ADMIN_PASSWORD = 'choose-a-password'
+python server.py
+```
 
-### Catalogue interface
+Open `http://127.0.0.1:8000`; the management panel is at `/admin.html` (username `admin`). The local SQLite database is created on first launch from `data/products.json`. Opening the HTML files directly will not run the catalogue. Run the tests with `python -m unittest discover -s tests`.
 
-The catalogue, quote and management pages share `css/polish.css` and `js/ui.js` (loading skeletons, fly-to-quote animation, back-to-top button, toasts). The homepage does not load them. Static files are cached for an hour, so when you change `polish.css`, `ui.js`, `store.js` or `admin.js`, bump the `?v=` number on their `<link>`/`<script>` tags in the HTML pages so visitors receive the update immediately.
+## What the site does
+
+- **Catalogue:** categories and products with search, size filter, category-aware tag filter, and an "add to quote" cart.
+- **Quotes:** requests are stored in the database (reference `RC-00001` style) and shown in the admin. When email is configured, the customer receives a confirmation with their quote attached as a PDF and Rangechem receives a copy. See *Quote emails* in [DEPLOYMENT.md](DEPLOYMENT.md).
+- **Admin:** edit products (name, category, size, tags, description, image), change category images (PNG, JPEG, WebP, GIF or SVG), edit the homepage hero and read quote requests.
+- **Product images:** the matcher checks filenames in `assets/product_images` for the complete stock code, ignoring case; the alphabetically first match wins. An image path or upload saved on the product overrides matching; clear it to restore matching. Products without an image show a placeholder.
+- **Shared polish:** `css/polish.css` and `js/ui.js` (skeleton loaders, fly-to-quote, back-to-top, toasts) are used on the catalogue, quote and admin pages, not the homepage. `build_deploy.py` stamps `?v=` cache versions on the asset links.
+
+## Building the deployment bundle
+
+```powershell
+python build_deploy.py
+```
+
+Creates `dist/rangechem-code.zip` and `dist/rangechem-product-images.zip` for cPanel (see [DEPLOYMENT.md](DEPLOYMENT.md)). Run it after every change.
 
 ### MariaDB local setup
 
@@ -27,43 +44,40 @@ python server.py
 
 The application initialises the tables and imports `data/products.json` only when the products table is empty. Docker's `rangechem_db` volume persists data across restarts. Do not delete the volume if you need its edits or quote requests. SQLite and MariaDB are separate databases; edits do not automatically migrate between them. To rebuild the import JSON from the supplied workbook, run `python import_products.py "full-path-to-workbook.xlsx"` before initialising an empty database. This does not overwrite an existing database.
 
-The application uses Flask and Waitress, with validated requests, protected admin endpoints and request throttling. Install dependencies with `pip install -r requirements.txt`. See [DEPLOYMENT.md](DEPLOYMENT.md) for production settings, HTTPS setup, backups and the remaining launch requirements. Quotes are stored for staff review; email notifications are not configured.
-
-Welcome to the documentation for the **Rangechem** website codebase. This guide explains the project structure, typography, brand assets, local vs. external resources, and how to make common updates easily.
-
 ---
 
 ## 📁 Project Structure
 
 ```text
-rangechem-v5.0/
-├── index.html                  # Main homepage HTML
-├── README.md                   # This guide
+rangechem-v6.0/
+├── index.html                  # Homepage (leave alone unless asked)
+├── categories.html, products.html, quote-request.html   # Shell pages rendered by js/store.js
+├── admin.html                  # Management panel (js/admin.js)
+├── server.py                   # Flask app: API, auth, uploads, static files
+├── mailer.py                   # Quote confirmation emails (SMTP + PDF)
+├── passenger_wsgi.py           # cPanel Python App entry point
+├── build_deploy.py             # Builds the deployment zips
+├── requirements.txt, .env.example
+├── AGENTS.md, CLAUDE.md        # Agent guidance (CLAUDE.md points to AGENTS.md)
+├── data/products.json          # Seed catalogue
+├── tests/                      # unittest suite
 ├── css/
-│   └── style.css               # Brand CSS, layout, transitions, custom styling
+│   ├── style.css, home-utilities.css   # Homepage
+│   ├── catalogue.css, navigation.css   # Catalogue pages and shared nav
+│   └── polish.css                      # Animations and admin styling
 ├── js/
-│   └── quote.js                # Quote cart counter helper script
+│   ├── store.js, admin.js, ui.js, navigation.js, quote.js
+│   └── vendor/                         # Lucide icons (homepage)
 └── assets/
-    ├── RC_Logo.png             # Rangechem Logo (Dark outline / red flask)
-    ├── RC_Logo Inverted.png    # Inverted Logo with text (White & red circular emblem)
-    ├── RC_Logo Inverted_NoTxt.png # Inverted Logo mark without circular text
-    ├── HomeBanner2.png         # Active Hero Banner image (Workshop filling line)
-    ├── HomeBanner_SmallScale1.jpg # Alternative Hero Banner (Close-up 5L & 25L filling)
-    ├── HomeBanner_SmallScale2.jpg # Alternative Hero Banner (Wide workshop view)
-    ├── icons/
-    │   ├── 13.1.svg            # Chemical Manufacturers icon
-    │   ├── 13.2.svg            # Industrial & Domestic Products icon
-    │   ├── 13.3.svg            # Quality Solutions icon
-    │   └── 13.4.svg            # Dedicated Service icon
-    ├── products/               # Vector bottle illustrations (1L, 500ml, 5L)
-    └── 02_Product Media/       # 36 high-resolution product photos with labels
-        ├── Dish O Max.png
-        ├── Degrakleen.png
-        ├── AUTO WASH.png
-        └── ...
+    ├── RC_Logo*.png, HomeBanner*.jpg   # Branding and hero images
+    ├── categories/                     # Default category illustrations (SVG)
+    ├── icons/                          # Homepage feature icons
+    ├── product_images/                 # Product photos matched by stock code (git-ignored)
+    └── uploads/                        # Admin uploads (created at runtime, git-ignored)
 ```
 
 ---
+
 
 ## 🎨 Typography & Fonts
 

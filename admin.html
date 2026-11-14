@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="css/catalogue.css">
 <link rel="stylesheet" href="css/navigation.css">
-<link rel="stylesheet" href="css/polish.css?v=20261115">
+<link rel="stylesheet" href="css/polish.css?v=0272f8a6">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -60,7 +60,7 @@
         <label>Heading<input name="hero_title" placeholder="Leave blank for default"></label>
         <label>Text<input name="hero_text" placeholder="Leave blank for default"></label>
         <label class="wide">Image path or URL<input name="hero_image" placeholder="Leave blank for default"></label>
-        <label>Upload image<input id="hero-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+        <label>Upload image<input id="hero-upload" type="file" accept="image/svg+xml,image/png,image/jpeg,image/webp,image/gif"></label>
       </div>
       <p id="settings-status" class="status"></p>
       <button>Save homepage</button>
@@ -92,7 +92,7 @@
         <div class="preview-box" id="preview"></div>
         <p class="preview-note" id="preview-note"></p>
         <div class="side-actions">
-          <span class="button secondary file-btn">Upload image<input id="product-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" aria-label="Upload product image"></span>
+          <span class="button secondary file-btn">Upload image<input id="product-upload" type="file" accept="image/svg+xml,image/png,image/jpeg,image/webp,image/gif" aria-label="Upload product image"></span>
           <button type="button" class="secondary" id="reset-image">Use automatic image</button>
         </div>
       </div>
@@ -125,8 +125,33 @@
   </form>
 </dialog>
 
-<script src="js/ui.js?v=20261115"></script>
-<script src="js/admin.js?v=20261114"></script>
+<dialog id="category-dialog" class="modal modal-small" aria-labelledby="cat-title">
+  <form id="category-form" class="modal-form" autocomplete="off">
+    <div class="modal-head">
+      <div><h2 id="cat-title"></h2><p class="sub">Category image (PNG, JPEG, WebP, GIF or SVG)</p></div>
+      <button type="button" class="icon-btn" id="cat-close" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body single">
+      <input type="hidden" name="category">
+      <div class="preview-box wide-preview" id="cat-preview"></div>
+      <p class="preview-note" id="cat-note"></p>
+      <div class="side-actions">
+        <span class="button secondary file-btn">Upload image or SVG<input id="cat-upload" type="file" accept="image/svg+xml,image/png,image/jpeg,image/webp,image/gif" aria-label="Upload category image"></span>
+        <button type="button" class="secondary" id="cat-reset">Use default illustration</button>
+      </div>
+      <label>Image path or URL<input name="image" placeholder="Leave blank for the default illustration"></label>
+    </div>
+    <div class="modal-foot">
+      <span class="grow"></span>
+      <button type="button" class="secondary" id="cat-cancel">Cancel</button>
+      <button type="submit" id="cat-save">Save image</button>
+      <p id="cat-status" class="status modal-status" role="status"></p>
+    </div>
+  </form>
+</dialog>
+
+<script src="js/ui.js?v=c1ee7482"></script>
+<script src="js/admin.js?v=4e46f126"></script>
 <script src="js/navigation.js"></script>
 </body>
 </html>
