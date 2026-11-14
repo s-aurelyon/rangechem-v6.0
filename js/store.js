@@ -11,7 +11,7 @@ function saveCart(items) {
   catch { throw Error('Your browser could not save the quote. Please enable site storage and try again.'); }
   count();
 }
-function count() { const el = $('#cart-count'); if (el) el.textContent = cart().reduce((n, x) => n + x.quantity, 0); }
+function count() { const el = $('#nav-quote-count'); if (el) el.textContent = cart().reduce((n, x) => n + x.quantity, 0); }
 window.addEventListener('storage', count);
 async function api(url, data) {
   const r = await fetch(url, data ? {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)} : {});
@@ -22,8 +22,7 @@ const categoryImages = {'Auto':'auto','Bathroom':'bathroom','Consumables':'consu
 const categoryCopy = {'Auto':'Care for vehicles, from the workshop to the finishing touch.','Bathroom':'Keep washrooms fresh, clean and ready for use.','Consumables':'Everyday essentials to keep your operation stocked.','Fabric Care':'Specialist care for textiles and upholstery.','Floorcare':'Cleaning and maintenance for hardworking floors.','General Cleaning':'Versatile solutions for everyday cleaning tasks.','Industrial Cleaning':'Cleaning solutions for demanding working environments.','Janitorial':'Tools and equipment for a thorough clean.','Kitchen':'Cleaning essentials for kitchens and food preparation areas.','Laundry':'Solutions for fresh, clean laundry.','PPE & Safety':'Protective equipment for the task at hand.'};
 const categoryImage = name => `assets/categories/${categoryImages[name] || 'category'}.svg`;
 const intro = (title, text) => `<section class="intro"><div class="intro-inner"><p class="eyebrow">RANGECHEM / CLEANING &amp; HYGIENE</p><h1>${esc(title)}</h1><p>${esc(text)}</p><div class="intro-rule"></div></div></section>`;
-document.body.insertAdjacentHTML('afterbegin', `<nav class="store-nav" aria-label="Main navigation"><strong><a href="index.html" class="store-logo" aria-label="Rangechem home"><img src="assets/RC_Logo.png" alt="" width="52" height="52">RANGE<span>CHEM</span></a></strong><a href="index.html">Home</a><a href="index.html#contact">Contact</a><div data-products-nav></div><a class="quote-link" href="quote-request.html">Quote <span id="cart-count">0</span></a></nav>`);
-document.body.insertAdjacentHTML('beforeend', `<footer class="store-footer"><div><strong>RANGE<span>CHEM</span></strong><p>Industrial cleaning solutions. Personal service.</p></div><div><a href="categories.html">Explore the range</a><a href="mailto:info@rangechem.co.za">info@rangechem.co.za</a><a href="tel:0219813320">021 981 3320</a></div></footer><div id="notification" role="status" aria-live="polite"></div>`);
+document.body.insertAdjacentHTML('beforeend', `<footer class="store-footer"><div><strong class="store-footer-brand"><img src="assets/RC_Logo.png" alt="" width="36" height="36">RANGE <span>CHEM</span></strong><p>Industrial cleaning solutions. Personal service.</p></div><div><a href="categories.html">Explore the range</a><a href="mailto:info@rangechem.co.za">info@rangechem.co.za</a><a href="tel:0219813320">021 981 3320</a></div></footer><div id="notification" role="status" aria-live="polite"></div>`);
 count();
 function notify(message) { $('#notification').textContent = message; }
 const main = $('main');

@@ -9,3 +9,26 @@
 :focus-visible{outline:3px solid #ed7569;outline-offset:4px}
 @media(max-width:767px){#mobile-menu [data-products-nav]{display:flex;flex-wrap:wrap}#mobile-menu .products-menu{position:static;flex-basis:100%;max-height:45vh}}
 @media(max-width:760px){.store-nav .products-menu{left:auto;right:-65px;min-width:235px;max-width:calc(100vw - 36px)}}
+
+/* Match the homepage navigation on catalogue and management pages. */
+.has-shared-nav{padding-top:112px}
+.shared-nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1.5rem 0;background:rgba(20,20,20,.97);color:#fff;font-family:Montserrat,system-ui,sans-serif;line-height:1.5;transition:background 240ms,box-shadow 240ms,padding 240ms}
+.shared-nav.scrolled{padding:.85rem 0;backdrop-filter:blur(14px);box-shadow:0 4px 24px #0006}
+.shared-nav-container{max-width:80rem;margin:0 auto;padding:0 2rem}
+.shared-nav-row{display:flex;align-items:center;justify-content:space-between}
+.shared-logo{display:flex;align-items:center;gap:.75rem;color:#fff;text-decoration:none;font-size:clamp(1.6rem,2.2vw,2rem);font-weight:900;letter-spacing:-.03em;line-height:1;white-space:nowrap}
+.shared-logo img{height:4rem;width:auto;margin-right:.75rem;padding:3px;background:#fff;border-radius:50%;box-shadow:0 2px 12px #0006}
+.shared-logo span{color:#d63121}
+.shared-links{display:flex;align-items:center;gap:2.25rem}
+.shared-nav .nav-link{position:relative;padding:.25rem 0;color:rgba(255,255,255,.88);font-size:.95rem;font-weight:600;letter-spacing:.02em;text-decoration:none}
+.shared-nav .nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2.5px;border-radius:2px;background:#d63121;transition:width 240ms}
+.shared-nav .nav-link:hover{color:#fff}.shared-nav .nav-link:hover::after{width:100%}
+.shared-actions{display:flex;align-items:center;gap:1rem}
+.shared-nav #quote-badge{display:flex;align-items:center;gap:.375rem}
+.shared-nav .quote-count{position:absolute;top:-8px;right:-8px;min-width:18px;height:18px;padding:0 4px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#d63121;color:#fff;font-size:.65rem;font-weight:800;line-height:1}
+.shared-nav #hamburger-btn{display:none;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin-right:-10px;padding:.25rem;border:0;border-radius:8px;background:transparent;color:#fff}
+.shared-nav #mobile-menu{display:none;flex-direction:column;gap:.5rem;padding:1rem 0 .5rem;margin-top:.5rem;background:#141414;border:1px solid #ffffff1a;border-radius:.5rem;box-shadow:0 10px 40px #0002}
+.shared-nav #mobile-menu.open{display:flex}
+@media(max-width:1023px){.shared-nav-container{padding:0 1.5rem}}
+@media(max-width:767px){.has-shared-nav{padding-top:104px}.shared-nav-container{padding:0 1.5rem}.shared-logo img{height:3.5rem}.shared-links{display:none}.shared-nav #hamburger-btn{display:flex}.shared-nav #mobile-menu .nav-link{padding:.5rem 0}}
+@media(max-width:639px){.has-shared-nav{padding-top:96px}.shared-nav-container{padding:0 1rem}.shared-logo img{height:3rem}.shared-quote-label{display:none}}
