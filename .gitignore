@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+data/*.db
+.env
+.local/
+assets/product_images/

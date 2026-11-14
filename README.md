@@ -1,5 +1,30 @@
 # Rangechem Website – Documentation & Customisation Guide
 
+## Catalogue and quote system
+
+Run `python server.py` from this directory and open `http://127.0.0.1:8000`. The default local test database is SQLite, created on first launch from `data/products.json`. Opening the HTML files directly will not run the catalogue. Set `ADMIN_PASSWORD` before starting the server and open `/admin.html`; the username is `admin`. The management panel edits products, sizes, tags, categories, images and homepage hero content, and displays submitted quote requests. Requests are stored in the database for staff to review; email delivery is not configured.
+
+The image matcher checks filenames in `assets/product_images` for the complete stock code, ignoring case. If multiple filenames match, the alphabetically first is used. Add an image to that folder and it will be picked up automatically. An image path or upload saved on the product overrides matching; clear the field to restore it. Products without a matching image show a placeholder.
+
+### MariaDB local setup
+
+On this Windows computer, a project-local MariaDB 11.4 instance is installed in `.local` and listens only on `127.0.0.1:3307`. Start the database and site with `python start_local.py`, enter an administrator password for the session when prompted, and open `http://127.0.0.1:8000`. The management username is `admin`. The database continues running when the website is stopped. Its data and locally generated credentials are stored in the ignored `.local` folder; back up that folder if you need to preserve the local database. The following Docker instructions are an alternative setup for other machines.
+
+Install Docker Desktop and Python, then install the driver with `pip install -r requirements.txt`. In PowerShell, set strong local credentials and start the database:
+
+```powershell
+$env:DB_PASSWORD = 'choose-a-database-password'
+$env:DB_ROOT_PASSWORD = 'choose-a-different-root-password'
+docker compose up -d
+$env:DB_ENGINE = 'mysql'
+$env:ADMIN_PASSWORD = 'choose-an-admin-password'
+python server.py
+```
+
+The application initialises the tables and imports `data/products.json` only when the products table is empty. Docker's `rangechem_db` volume persists data across restarts. Do not delete the volume if you need its edits or quote requests. SQLite and MariaDB are separate databases; edits do not automatically migrate between them. To rebuild the import JSON from the supplied workbook, run `python import_products.py "full-path-to-workbook.xlsx"` before initialising an empty database. This does not overwrite an existing database.
+
+The server binds to localhost for development. Before deployment, use a production web server with HTTPS, proper administrator accounts and session protection, backups, image storage, and an agreed quote notification/delivery method. The local server and single shared administrator password are not a production security setup.
+
 Welcome to the documentation for the **Rangechem** website codebase. This guide explains the project structure, typography, brand assets, local vs. external resources, and how to make common updates easily.
 
 ---
