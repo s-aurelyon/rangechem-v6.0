@@ -26,6 +26,38 @@ shop.example.com {
 
 The reverse proxy must preserve the public Host header. Do not expose port 8000 publicly. Authentication uses HTTP Basic and therefore requires HTTPS. Restrict `/admin.html` and administrative `/api/*` routes to trusted staff through your proxy or identity provider if individual accounts, MFA or audit trails are needed. The app does not trust forwarded client-IP headers: its built-in throttles may share a single bucket behind a proxy. Configure per-client request and login limits at the proxy; app throttling is a secondary safeguard. Run a single application process unless you add shared rate-limit storage.
 
+## cPanel (Setup Python App / Passenger)
+
+1. **Database:** cPanel > MySQL Databases. Create a database and a user, then add the user to the database with ALL PRIVILEGES. cPanel prefixes both names with your account name (for example `acct_rangechem`).
+2. **Upload:** put the project in a folder outside `public_html` (for example `/home/ACCOUNT/rangechem`) using Git Version Control or File Manager. Upload the `assets/product_images` folder separately because it is not in Git.
+3. **Create the app:** cPanel > Setup Python App > Create Application.
+   - Python version: **3.12.14** (or 3.13.15). Do not use 3.7 to 3.8.
+   - Application root: `rangechem`
+   - Application URL: a domain or subdomain root (the site uses absolute `/api/...` paths, so do not use a sub-folder URL).
+   - Application startup file: `passenger_wsgi.py`
+   - Application Entry point: `application`
+4. **Environment variables** (add each in the same page, then Save):
+
+   | Name | Value |
+   |---|---|
+   | `APP_ENV` | `production` |
+   | `PUBLIC_ORIGIN` | `https://your-domain.co.za` (no trailing slash) |
+   | `ADMIN_PASSWORD` | random, at least 16 characters |
+   | `DB_ENGINE` | `mysql` |
+   | `DB_HOST` | `127.0.0.1` |
+   | `DB_PORT` | `3306` |
+   | `DB_NAME` | the full prefixed database name |
+   | `DB_USER` | the full prefixed database user |
+   | `DB_PASSWORD` | the database user's password |
+
+   `HOST` and `PORT` are not needed under Passenger.
+5. **Dependencies:** on the same page, type `requirements.txt` under Configuration files, click Add, then Run Pip Install.
+6. **Start:** click Restart. The tables are created and `data/products.json` is imported automatically on the first start. Open the site, then `/admin.html` (username `admin`).
+7. **HTTPS:** enable AutoSSL for the domain and turn on Force HTTPS Redirect (Domains). Admin sign-in uses HTTP Basic and must only be used over HTTPS.
+8. **After any change:** click Restart on the Python App page. Errors are written to `stderr.log` in the application root.
+
+Keep Passenger to a single process on first start so the product import cannot run twice.
+
 ## Before going live
 
 - Set the real domain, TLS, persistent MariaDB storage and the administrator secret. These are hosting settings, not values to commit to Git.
