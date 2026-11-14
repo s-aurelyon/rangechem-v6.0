@@ -4,7 +4,7 @@ The application now serves through Flask and Waitress. The homepage content is u
 
 ## Install and run
 
-Use Python 3.12 or newer, create a virtual environment, and run `pip install -r requirements.txt`. Existing Windows installations can also install into `.local/python` using `python -m pip install --target .local/python -r requirements.txt`.
+Use Python 3.11 or newer, create a virtual environment, and run `pip install -r requirements.txt`. HostAfrica's Python 3.11.18 runtime is suitable for this project. Existing Windows installations can also install into `.local/python` using `python -m pip install --target .local/python -r requirements.txt`.
 
 Set these environment variables using your hosting provider's secret manager:
 
@@ -25,6 +25,10 @@ shop.example.com {
 ```
 
 The reverse proxy must preserve the public Host header. Do not expose port 8000 publicly. Authentication uses HTTP Basic and therefore requires HTTPS. Restrict `/admin.html` and administrative `/api/*` routes to trusted staff through your proxy or identity provider if individual accounts, MFA or audit trails are needed. The app does not trust forwarded client-IP headers: its built-in throttles may share a single bucket behind a proxy. Configure per-client request and login limits at the proxy; app throttling is a secondary safeguard. Run a single application process unless you add shared rate-limit storage.
+
+## HostAfrica (DirectAdmin / CloudLinux Python Selector)
+
+HostAfrica uses DirectAdmin rather than cPanel. For the verified Python Selector setup and startup troubleshooting process, see [HOSTAFRICA_DEPLOYMENT.md](HOSTAFRICA_DEPLOYMENT.md).
 
 ## cPanel (Setup Python App / Passenger)
 

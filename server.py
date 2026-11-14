@@ -335,6 +335,8 @@ def upload():
 @app.get('/<path:path>')
 def static_file(path='index.html'):
     target = (ROOT / path).resolve()
+    if not target.is_file() and '%' in path:
+        target = (ROOT / unquote(path)).resolve()
     public_pages = {'index.html','products.html','categories.html','category.html','quote-request.html','admin.html'}
     allowed = target.parent == ROOT and target.name in public_pages or any(parent in target.parents for parent in (ROOT/'css',ROOT/'js',ROOT/'assets'))
     if not allowed or not target.is_file(): abort(404)

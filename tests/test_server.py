@@ -7,6 +7,7 @@ import tempfile
 import unittest
 import server
 import mailer
+from werkzeug.exceptions import NotFound
 
 
 class SiteTests(unittest.TestCase):
@@ -75,6 +76,28 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(response.headers['X-Content-Type-Options'], 'nosniff')
         response.close()
         self.assertEqual(self.client.get('/api/products').headers['Cache-Control'], 'no-store')
+
+    def test_static_file_decodes_encoded_path_and_blocks_encoded_traversal(self):
+        old_root = server.ROOT
+        with tempfile.TemporaryDirectory() as temp:
+            server.ROOT = Path(temp)
+            image_dir = server.ROOT / 'assets' / 'product_images'
+            image_dir.mkdir(parents=True)
+            image = image_dir / '[ABC-10] Product image.jpg'
+            image.write_bytes(b'test image')
+            (server.ROOT / 'server.py').write_text('private', encoding='utf-8')
+            try:
+                with server.app.test_request_context('/'):
+                    response = server.static_file('assets/product_images/%5BABC-10%5D%20Product%20image.jpg')
+                    try:
+                        self.assertEqual(response.status_code, 200)
+                        self.assertEqual(response.content_type, 'image/jpeg')
+                    finally:
+                        response.close()
+                    with self.assertRaises(NotFound):
+                        server.static_file('assets/%2e%2e/server.py')
+            finally:
+                server.ROOT = old_root
 
     def test_upload_and_image_url_validation(self):
         self.assertEqual(self.client.post('/api/upload', json={'name':'bad.png','content':base64.b64encode(b'not an image').decode()}, headers=self.auth).status_code, 400)
