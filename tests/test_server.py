@@ -91,5 +91,20 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(self.client.post('/api/quote', json=data).status_code, 400)
         self.assertEqual(self.client.post('/api/product', json={'id':9999999,'name':'Test','category':'Test'}, headers=self.auth).status_code, 404)
 
+    def test_image_matching_whole_code_only_and_cache_parity(self):
+        folder = server.ROOT / 'assets' / 'product_images'
+        files = sorted([folder / '[ABC-10] Big Bottle.jpg', folder / '[ABC-1] Small Bottle.jpg', folder / 'other.png'], key=lambda p: p.name.lower())
+        stems = [p.stem.lower() for p in files]
+        for code, expected in [('ABC-1', 'assets/product_images/[ABC-1] Small Bottle.jpg'), ('abc-10', 'assets/product_images/[ABC-10] Big Bottle.jpg'), ('ABC-100', ''), ('', '')]:
+            product = {'stock_code': code, 'image': ''}
+            self.assertEqual(server.image_for(product, files), expected)
+            self.assertEqual(server.image_for(product, files, stems), expected)
+        self.assertEqual(server.image_for({'stock_code': 'ABC-1', 'image': 'assets/custom.png'}, files), 'assets/custom.png')
+
+    def test_products_api_images_stable_between_requests(self):
+        first = self.client.get('/api/products').json
+        second = self.client.get('/api/products').json
+        self.assertEqual([p['display_image'] for p in first], [p['display_image'] for p in second])
+
 
 if __name__ == '__main__': unittest.main()

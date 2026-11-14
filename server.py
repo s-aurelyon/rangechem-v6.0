@@ -42,14 +42,36 @@ def init():
             query(db, 'INSERT INTO products (category,name,description,image,stock_code,size,tags) VALUES (?,?,?,?,?,?,?)', tuple(p.get(k, '') for k in ('category','name','description','image','stock_code','size','tags')))
     db.commit(); db.close()
 
-def image_for(product, files):
+def image_for(product, files, stems=None):
     if product.get('image'): return product['image']
     code = product.get('stock_code', '').strip().lower()
     if not code: return ''
     # A bracketed code or a whole code in a filename avoids partial-code matches.
     pattern = re.compile(r'(?<![a-z0-9])' + re.escape(code) + r'(?![a-z0-9])', re.I)
-    matches = [p for p in files if pattern.search(p.stem)]
-    return matches[0].relative_to(ROOT).as_posix() if matches else ''
+    stems = stems if stems is not None else [p.stem.lower() for p in files]
+    for path, stem in zip(files, stems):
+        # The cheap substring test skips the regex for almost every file.
+        if code in stem and pattern.search(path.stem):
+            return path.relative_to(ROOT).as_posix()
+    return ''
+
+
+_image_cache = {'signature': None, 'files': [], 'stems': [], 'matches': {}}
+_image_cache_lock = Lock()
+
+
+def product_images():
+    """Return the sorted image files, reusing the previous scan until the folder changes."""
+    folder = ROOT / 'assets' / 'product_images'
+    with _image_cache_lock:
+        try:
+            signature = folder.stat().st_mtime_ns if folder.exists() else None
+        except OSError:
+            signature = None
+        if signature != _image_cache['signature'] or _image_cache['signature'] is None:
+            files = sorted((p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in ('.png','.jpg','.jpeg','.webp','.gif')), key=lambda p:p.name.lower()) if folder.exists() else []
+            _image_cache.update(signature=signature, files=files, stems=[p.stem.lower() for p in files], matches={})
+        return _image_cache['files'], _image_cache['stems'], _image_cache['matches']
 
 app = Flask(__name__, static_folder=None)
 app.config['MAX_CONTENT_LENGTH'] = 8_000_000
@@ -147,10 +169,15 @@ def image_path(value):
 def products():
     with closing(connect()) as db:
         result = [dict(r) for r in query(db, 'SELECT * FROM products ORDER BY name, size').fetchall()]
-    folder = ROOT / 'assets' / 'product_images'
-    files = sorted((p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in ('.png','.jpg','.jpeg','.webp','.gif')), key=lambda p:p.name.lower()) if folder.exists() else []
+    files, stems, matches = product_images()
     for product in result:
-        product['display_image'] = image_for(product, files)
+        code = (product.get('stock_code') or '').strip().lower()
+        if product.get('image') or not code:
+            product['display_image'] = product.get('image') or ''
+        else:
+            if code not in matches:
+                matches[code] = image_for(product, files, stems)
+            product['display_image'] = matches[code]
     return jsonify(result)
 
 

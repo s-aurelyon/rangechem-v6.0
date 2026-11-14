@@ -6,6 +6,10 @@ Run `python server.py` from this directory and open `http://127.0.0.1:8000`. The
 
 The image matcher checks filenames in `assets/product_images` for the complete stock code, ignoring case. If multiple filenames match, the alphabetically first is used. Add an image to that folder and it will be picked up automatically. An image path or upload saved on the product overrides matching; clear the field to restore it. Products without a matching image show a placeholder.
 
+### Catalogue interface
+
+The catalogue, quote and management pages share `css/polish.css` and `js/ui.js` (loading skeletons, fly-to-quote animation, back-to-top button, toasts). The homepage does not load them. Static files are cached for an hour, so when you change `polish.css`, `ui.js`, `store.js` or `admin.js`, bump the `?v=` number on their `<link>`/`<script>` tags in the HTML pages so visitors receive the update immediately.
+
 ### MariaDB local setup
 
 On this Windows computer, a project-local MariaDB 11.4 instance is installed in `.local` and listens only on `127.0.0.1:3307`. Start the database and site with `python start_local.py`, enter an administrator password for the session when prompted, and open `http://127.0.0.1:8000`. The management username is `admin`. The database continues running when the website is stopped. Its data and locally generated credentials are stored in the ignored `.local` folder; back up that folder if you need to preserve the local database. The following Docker instructions are an alternative setup for other machines.

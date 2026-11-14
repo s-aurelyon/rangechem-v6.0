@@ -1,1 +1,132 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Site management | Rangechem</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"><link rel="stylesheet" href="css/catalogue.css"><link rel="stylesheet" href="css/navigation.css"></head><body><a class="skip-link" href="#main-content">Skip to content</a><main id="main-content" class="wrap"><p class="eyebrow">RANGECHEM / MANAGEMENT</p><h1>Site management</h1><p class="muted">Manage your range, homepage and incoming quote requests.</p><p id="error" class="status" role="alert"></p><div class="panel"><h2>Products</h2><div class="controls"><input id="find" aria-label="Search products" placeholder="Search name, code or category"><button id="new">Add product</button></div><div id="list" class="admin-list"></div></div><div class="spacer"></div><form id="product-form" class="panel"><h2 id="product-heading">New product</h2><input type="hidden" name="id"><div class="form-grid"><label>Product name *<input name="name" required></label><label>Category *<input name="category" required></label><label>Stock code<input name="stock_code"></label><label>Size<input name="size"></label><label class="wide">Description<textarea name="description"></textarea></label><label class="wide">Tags (comma separated)<input name="tags"></label><label class="wide">Image override path or URL<input name="image" placeholder="Leave blank to match by stock code automatically"></label><label>Upload image<input id="product-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label></div><p class="muted">A blank image override automatically matches a filename containing the stock code in assets/product_images. Clear the override to restore automatic matching.</p><p id="product-status" class="status"></p><button>Save product</button> <button id="delete" type="button" class="secondary">Delete product</button></form><div class="spacer"></div><form id="settings-form" class="panel"><h2>Homepage hero</h2><div class="form-grid"><label>Heading<input name="hero_title" placeholder="Leave blank for default"></label><label>Text<input name="hero_text" placeholder="Leave blank for default"></label><label class="wide">Image path or URL<input name="hero_image" placeholder="Leave blank for default"></label><label>Upload image<input id="hero-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label></div><p id="settings-status" class="status"></p><button>Save homepage</button></form><div class="spacer"></div><h2>Quote requests</h2><div id="quotes"></div></main><script src="js/admin.js"></script><script src="js/navigation.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Site management | Rangechem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="css/catalogue.css">
+<link rel="stylesheet" href="css/navigation.css">
+<link rel="stylesheet" href="css/polish.css?v=20261115">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<main id="main-content" class="wrap admin-wrap">
+  <div class="admin-head">
+    <div>
+      <p class="eyebrow">RANGECHEM / MANAGEMENT</p>
+      <h1>Site management</h1>
+      <p class="muted">Manage your range, homepage and incoming quote requests.</p>
+    </div>
+    <button id="new" type="button">+ Add product</button>
+  </div>
+  <p id="error" class="status" role="alert"></p>
+
+  <div id="stats" class="admin-stats" aria-label="Summary"></div>
+
+  <div class="tabs" role="tablist" aria-label="Management sections">
+    <button class="tab" role="tab" id="t-products" data-tab="products" aria-selected="true" aria-controls="tab-products">Products</button>
+    <button class="tab" role="tab" id="t-homepage" data-tab="homepage" aria-selected="false" aria-controls="tab-homepage">Homepage hero</button>
+    <button class="tab" role="tab" id="t-quotes" data-tab="quotes" aria-selected="false" aria-controls="tab-quotes">Quote requests <span class="tab-badge" id="quote-badge-count" hidden></span></button>
+  </div>
+
+  <!-- PRODUCTS -->
+  <section id="tab-products" class="tab-panel" role="tabpanel" aria-labelledby="t-products">
+    <div class="admin-toolbar">
+      <label class="search-box">
+        <span class="sr-only" hidden>Search products</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="find" type="search" aria-label="Search products" placeholder="Search name, stock code or tag (Enter opens an exact stock code)" autocomplete="off">
+      </label>
+      <div class="seg" role="group" aria-label="Browse mode">
+        <button type="button" class="seg-btn" data-view="categories" aria-pressed="true">By category</button>
+        <button type="button" class="seg-btn" data-view="all" aria-pressed="false">All products</button>
+      </div>
+    </div>
+    <div id="crumbs" class="crumbs" hidden></div>
+    <div id="browse" aria-live="polite"></div>
+    <div class="admin-more"><button id="more" type="button" class="secondary" hidden>Show more products</button><div id="sentinel" aria-hidden="true"></div></div>
+  </section>
+
+  <!-- HOMEPAGE -->
+  <section id="tab-homepage" class="tab-panel" role="tabpanel" aria-labelledby="t-homepage" hidden>
+    <form id="settings-form" class="panel">
+      <h2>Homepage hero</h2>
+      <div class="hero-preview" id="hero-preview"><span id="hero-preview-title"></span></div>
+      <div class="spacer" style="height:18px"></div>
+      <div class="form-grid">
+        <label>Heading<input name="hero_title" placeholder="Leave blank for default"></label>
+        <label>Text<input name="hero_text" placeholder="Leave blank for default"></label>
+        <label class="wide">Image path or URL<input name="hero_image" placeholder="Leave blank for default"></label>
+        <label>Upload image<input id="hero-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+      </div>
+      <p id="settings-status" class="status"></p>
+      <button>Save homepage</button>
+    </form>
+  </section>
+
+  <!-- QUOTES -->
+  <section id="tab-quotes" class="tab-panel" role="tabpanel" aria-labelledby="t-quotes" hidden>
+    <div id="quotes" class="quote-list"></div>
+  </section>
+</main>
+
+<datalist id="category-list"></datalist>
+<datalist id="tag-list"></datalist>
+
+<dialog id="product-dialog" class="modal" aria-labelledby="dialog-title">
+  <form id="product-form" class="modal-form" autocomplete="off">
+    <div class="modal-head">
+      <div>
+        <h2 id="dialog-title">Edit product</h2>
+        <p class="sub" id="dialog-sub"></p>
+      </div>
+      <button type="button" class="icon-btn" id="dialog-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="preview-box" id="preview"></div>
+        <p class="preview-note" id="preview-note"></p>
+        <div class="side-actions">
+          <span class="button secondary file-btn">Upload image<input id="product-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" aria-label="Upload product image"></span>
+          <button type="button" class="secondary" id="reset-image">Use automatic image</button>
+        </div>
+      </div>
+      <div class="modal-fields">
+        <input type="hidden" name="id">
+        <label class="wide">Product name *<input name="name" required maxlength="500"></label>
+        <label>Category *<input name="category" required maxlength="255" list="category-list" placeholder="Choose or type a new one"></label>
+        <label>Stock code<input name="stock_code" maxlength="255"></label>
+        <label>Size<input name="size" maxlength="255"></label>
+        <label class="wide">Description<textarea name="description" maxlength="10000"></textarea></label>
+        <div class="wide">
+          <label for="tag-input" style="font-size:.78rem;font-weight:700;display:block;margin-bottom:7px">Tags <span class="field-hint">Press Enter or comma to add</span></label>
+          <div class="tag-editor" id="tag-editor"><input id="tag-input" list="tag-list" placeholder="Add a tag"></div>
+          <input type="hidden" name="tags">
+        </div>
+        <details class="advanced">
+          <summary>Advanced image settings</summary>
+          <label>Image override path or URL<input name="image" placeholder="Leave blank to match by stock code automatically"></label>
+          <p class="field-hint">A blank override matches a filename containing the stock code in assets/product_images.</p>
+        </details>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="danger" id="delete" hidden>Delete product</button>
+      <span class="grow"></span>
+      <button type="button" class="secondary" id="cancel">Cancel</button>
+      <button type="submit" id="save">Save product</button>
+      <p id="product-status" class="status modal-status" role="status"></p>
+    </div>
+  </form>
+</dialog>
+
+<script src="js/ui.js?v=20261115"></script>
+<script src="js/admin.js?v=20261114"></script>
+<script src="js/navigation.js"></script>
+</body>
+</html>
