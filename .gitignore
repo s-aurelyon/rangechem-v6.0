@@ -4,3 +4,5 @@ data/*.db
 .env
 .local/
 assets/product_images/
+
+assets/uploads/

@@ -5,7 +5,7 @@
             const saved = JSON.parse(localStorage.getItem('rangechem_quote') || '[]');
             const countEl = document.getElementById('nav-quote-count');
             if (countEl) {
-                countEl.textContent = saved.reduce((n, item) => n + (Number(item.quantity) || 0), 0);
+                countEl.textContent = (Array.isArray(saved) ? saved : []).reduce((n, item) => n + (Number(item.quantity) || 0), 0);
             }
         } catch (e) {
             // Ignore parse errors

@@ -17,19 +17,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Montserrat', 'system-ui', 'sans-serif'] },
-                    colors: { 'rc-primary': '#141414', 'rc-red': '#d63121', 'rc-red-dark': '#b02519' }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="css/home-utilities.css">
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <link rel="stylesheet" href="css/navigation.css">
+    <script src="js/vendor/lucide.min.js" defer></script>
 </head>
 
 <body class="bg-white font-sans">
@@ -44,21 +35,7 @@
                 <div class="hidden md:flex items-center gap-9">
                     <a href="index.html" class="nav-link active">Home</a>
                     <a href="#contact" class="nav-link">Contact</a>
-                    <div class="relative group">
-                        <a href="categories.html" class="nav-link flex items-center gap-1">
-                            Products
-                            <i data-lucide="chevron-down"
-                                class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180"></i>
-                        </a>
-                        <div
-                            class="absolute top-full left-0 mt-2 w-56 bg-rc-primary border border-white/10 rounded-lg shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-1.5">
-                            <div class="border-t border-white/10 mt-1 pt-1">
-                                <a href="products.html"
-                                    class="block px-4 py-2 text-sm font-600 text-rc-red hover:text-white hover:bg-white/5">All
-                                    Products</a>
-                            </div>
-                        </div>
-                    </div>
+                    <div data-products-nav></div>
                 </div>
                 <!-- Quote and Hamburger -->
                 <div class="flex items-center gap-4">
@@ -77,8 +54,7 @@
             <div id="mobile-menu" role="menu" class="px-4">
                 <a href="index.html" class="nav-link py-2 active">Home</a>
                 <a href="#contact" class="nav-link py-2 mobile-anchor">Contact</a>
-                <a href="categories.html" class="nav-link py-2">Products</a>
-                <a href="products.html" class="nav-link py-1.5 pl-4 text-white/80 font-600">↳ All Products</a>
+                <div data-products-nav></div>
             </div>
         </div>
     </nav>
@@ -393,6 +369,7 @@
         </div>
     </footer>
 
+    <script src="js/navigation.js"></script>
     <script src="js/quote.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

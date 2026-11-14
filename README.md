@@ -23,7 +23,7 @@ python server.py
 
 The application initialises the tables and imports `data/products.json` only when the products table is empty. Docker's `rangechem_db` volume persists data across restarts. Do not delete the volume if you need its edits or quote requests. SQLite and MariaDB are separate databases; edits do not automatically migrate between them. To rebuild the import JSON from the supplied workbook, run `python import_products.py "full-path-to-workbook.xlsx"` before initialising an empty database. This does not overwrite an existing database.
 
-The server binds to localhost for development. Before deployment, use a production web server with HTTPS, proper administrator accounts and session protection, backups, image storage, and an agreed quote notification/delivery method. The local server and single shared administrator password are not a production security setup.
+The application uses Flask and Waitress, with validated requests, protected admin endpoints and request throttling. Install dependencies with `pip install -r requirements.txt`. See [DEPLOYMENT.md](DEPLOYMENT.md) for production settings, HTTPS setup, backups and the remaining launch requirements. Quotes are stored for staff review; email notifications are not configured.
 
 Welcome to the documentation for the **Rangechem** website codebase. This guide explains the project structure, typography, brand assets, local vs. external resources, and how to make common updates easily.
 
@@ -122,9 +122,9 @@ These external resources require an internet connection:
 - **Hero Image Fallback**:
   `https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1920&q=80` (Located in `css/style.css` line 190).
 - **Lucide Icons Library**:
-  `https://unpkg.com/lucide@latest/dist/umd/lucide.min.js` (Used for UI icons such as phone, mail, map-pin, menu, chevron, etc.).
+  `js/vendor/lucide.min.js` (pinned Lucide 0.468.0) (Used for UI icons such as phone, mail, map-pin, menu, chevron, etc.).
 - **Tailwind CSS CDN**:
-  `https://cdn.tailwindcss.com` (Utility framework script).
+  Precompiled locally in `css/home-utilities.css`; no runtime CDN script.
 
 ---
 

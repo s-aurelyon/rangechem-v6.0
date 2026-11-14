@@ -1,9 +1,16 @@
-import base64, hmac, json, mimetypes, os, re, secrets, sqlite3
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import base64, hmac, json, os, re, secrets, sqlite3, sys, time
+from collections import defaultdict, deque
+from threading import Lock
+from contextlib import closing
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parent
+# Support the existing project-local Windows installation.
+sys.path.insert(0, str(ROOT / '.local' / 'python'))
+from flask import Flask, request, jsonify, send_file, abort
+from werkzeug.exceptions import HTTPException
+
 os.chdir(ROOT)
 MYSQL = os.getenv('DB_ENGINE', 'sqlite') == 'mysql'
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', '')
@@ -12,7 +19,7 @@ def connect():
     if MYSQL:
         import pymysql
         return pymysql.connect(host=os.getenv('DB_HOST', '127.0.0.1'), port=int(os.getenv('DB_PORT', '3306')), user=os.getenv('DB_USER', 'rangechem'), password=os.environ['DB_PASSWORD'], database=os.getenv('DB_NAME', 'rangechem'), charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor, autocommit=False)
-    db = sqlite3.connect(ROOT / 'data' / 'rangechem.db', timeout=30)
+    db = sqlite3.connect(os.getenv('SQLITE_PATH', str(ROOT / 'data' / 'rangechem.db')), timeout=30)
     db.row_factory = sqlite3.Row
     return db
 
@@ -44,89 +51,228 @@ def image_for(product, files):
     matches = [p for p in files if pattern.search(p.stem)]
     return matches[0].relative_to(ROOT).as_posix() if matches else ''
 
-class Handler(BaseHTTPRequestHandler):
-    def send(self, status, payload, kind='application/json; charset=utf-8'):
-        body = json.dumps(payload, ensure_ascii=False).encode() if kind.startswith('application/json') else payload
-        self.send_response(status); self.send_header('Content-Type',kind); self.send_header('Content-Length',str(len(body))); self.send_header('X-Content-Type-Options','nosniff'); self.end_headers(); self.wfile.write(body)
-    def authorized(self):
-        try:
-            scheme, token = self.headers.get('Authorization','').split(' ',1)
-            user, password = base64.b64decode(token).decode().split(':',1)
-            return bool(ADMIN_PASSWORD) and scheme == 'Basic' and hmac.compare_digest(user,'admin') and hmac.compare_digest(password,ADMIN_PASSWORD)
-        except Exception: return False
-    def admin(self):
-        if self.authorized(): return True
-        self.send_response(401); self.send_header('WWW-Authenticate','Basic realm="Rangechem management"'); self.end_headers(); return False
-    def body(self):
-        length = int(self.headers.get('Content-Length','0'))
-        if length > 8_000_000: raise ValueError('Request too large')
-        return json.loads(self.rfile.read(length))
-    def do_GET(self):
-        path = unquote(urlsplit(self.path).path)
-        if path.startswith('/api/'):
-            db=connect()
-            try:
-                if path == '/api/products':
-                    products=[dict(r) for r in query(db,'SELECT * FROM products ORDER BY name, size').fetchall()]
-                    folder=ROOT/'assets'/'product_images'
-                    files=sorted((p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in ('.png','.jpg','.jpeg','.webp','.gif')),key=lambda p:p.name.lower()) if folder.exists() else []
-                    for p in products: p['display_image']=image_for(p, files)
-                    self.send(200,products)
-                elif path == '/api/settings': self.send(200,{r['name']:r['value'] for r in query(db,'SELECT * FROM settings').fetchall()})
-                elif path == '/api/quotes' and self.admin(): self.send(200,[dict(r) for r in query(db,'SELECT * FROM quotes ORDER BY id DESC').fetchall()])
-                elif path == '/api/admin' and self.admin(): self.send(200,{'ok':True})
-                elif path not in ('/api/quotes','/api/admin'): self.send(404,{'error':'Not found'})
-            finally: db.close()
-            return
-        if path == '/': path='/index.html'
-        target=(ROOT / path.lstrip('/')).resolve()
-        allowed = target.parent == ROOT and target.suffix == '.html' or any(parent in target.parents for parent in (ROOT/'css',ROOT/'js',ROOT/'assets'))
-        if not allowed or not target.is_file(): self.send(404,b'Not found','text/plain'); return
-        self.send(200,target.read_bytes(),mimetypes.guess_type(str(target))[0] or 'application/octet-stream')
-    def do_POST(self):
-        path=urlsplit(self.path).path
-        if path != '/api/quote' and not self.admin(): return
-        origin=self.headers.get('Origin')
-        if origin and urlsplit(origin).netloc != self.headers.get('Host'): self.send(403,{'error':'Invalid origin'}); return
-        try:
-            data=self.body(); db=connect()
-            try:
-                if path == '/api/quote':
-                    from datetime import datetime, timezone
-                    customer=data.get('customer',{}); items=data.get('items',[])
-                    if not all(str(customer.get(k,'')).strip() for k in ('name','email')) or not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',str(customer.get('email',''))) or not isinstance(items,list) or not 1 <= len(items) <= 100: raise ValueError('Enter your name, a valid email and at least one item.')
-                    clean=[]
-                    for item in items:
-                        p=query(db,'SELECT id,name,stock_code,size FROM products WHERE id=?',(int(item['id']),)).fetchone(); qty=int(item['quantity'])
-                        if not p or not 1 <= qty <= 10000: raise ValueError('Invalid product or quantity.')
-                        clean.append({**dict(p),'quantity':qty})
-                    query(db,'INSERT INTO quotes (created,customer,items) VALUES (?,?,?)',(datetime.now(timezone.utc).isoformat(),json.dumps(customer),json.dumps(clean)))
-                elif path == '/api/product':
-                    fields=('category','name','description','image','stock_code','size','tags')
-                    values=[str(data.get(k,'')).strip() for k in fields]
-                    if not values[0] or not values[1]: raise ValueError('Name and category are required.')
-                    if any(len(v)>10000 for v in values): raise ValueError('Field is too long.')
-                    if data.get('id'): query(db,'UPDATE products SET category=?,name=?,description=?,image=?,stock_code=?,size=?,tags=? WHERE id=?',(*values,int(data['id'])))
-                    else: query(db,'INSERT INTO products (category,name,description,image,stock_code,size,tags) VALUES (?,?,?,?,?,?,?)',values)
-                elif path == '/api/delete-product': query(db,'DELETE FROM products WHERE id=?',(int(data['id']),))
-                elif path == '/api/settings':
-                    for key in ('hero_image','hero_title','hero_text'):
-                        if key in data:
-                            query(db,'DELETE FROM settings WHERE name=?',(key,)); query(db,'INSERT INTO settings (name,value) VALUES (?,?)',(key,str(data[key])[:2000]))
-                elif path == '/api/upload':
-                    ext=Path(data.get('name','')).suffix.lower()
-                    if ext not in ('.png','.jpg','.jpeg','.webp','.gif'): raise ValueError('Choose a PNG, JPEG, GIF or WebP image.')
-                    raw=base64.b64decode(data['content'],validate=True)
-                    signatures={'.png':b'\x89PNG\r\n\x1a\n','.jpg':b'\xff\xd8\xff','.jpeg':b'\xff\xd8\xff','.gif':b'GIF8','.webp':b'RIFF'}
-                    if not raw.startswith(signatures[ext]) or (ext=='.webp' and raw[8:12]!=b'WEBP'): raise ValueError('Invalid image file.')
-                    dest=ROOT/'assets'/'uploads'; dest.mkdir(exist_ok=True); filename=secrets.token_hex(16)+ext; (dest/filename).write_bytes(raw)
-                    self.send(200,{'path':'assets/uploads/'+filename}); return
-                else: self.send(404,{'error':'Not found'}); return
-                db.commit(); self.send(200,{'ok':True})
-            finally: db.close()
-        except (ValueError,KeyError,TypeError,json.JSONDecodeError) as exc: self.send(400,{'error':str(exc)})
+app = Flask(__name__, static_folder=None)
+app.config['MAX_CONTENT_LENGTH'] = 8_000_000
+PRODUCTION = os.getenv('APP_ENV') == 'production'
+PUBLIC_ORIGIN = os.getenv('PUBLIC_ORIGIN', '').rstrip('/')
+limits = defaultdict(deque)
+limits_lock = Lock()
+
+
+def throttle(bucket, maximum, seconds):
+    now = time.monotonic()
+    key = (bucket, request.remote_addr)
+    with limits_lock:
+        # Bound memory even when requests arrive from many addresses.
+        for old_key in list(limits):
+            if not limits[old_key] or now - limits[old_key][-1] > 3600:
+                del limits[old_key]
+        if key not in limits and len(limits) >= 10000:
+            abort(429, description='Please try again later.')
+        queue = limits[key]
+        while queue and now - queue[0] >= seconds:
+            queue.popleft()
+        if len(queue) >= maximum:
+            abort(429, description='Too many requests. Please try again later.')
+        queue.append(now)
+
+
+def authorized():
+    auth = request.authorization
+    return bool(ADMIN_PASSWORD) and auth and auth.type == 'basic' and hmac.compare_digest(auth.username or '', 'admin') and hmac.compare_digest((auth.password or '').encode(), ADMIN_PASSWORD.encode())
+
+
+@app.before_request
+def protect_requests():
+    if request.path in ('/api/admin', '/api/quotes', '/admin.html') or (request.method == 'POST' and request.path != '/api/quote'):
+        if not authorized():
+            throttle('login', 20, 300)
+            return jsonify(error='Administrator sign-in required.'), 401, {'WWW-Authenticate':'Basic realm="Rangechem management", charset="UTF-8"'}
+    if request.method == 'POST':
+        if not request.is_json:
+            abort(415, description='Send a JSON request.')
+        origin = request.headers.get('Origin')
+        expected = PUBLIC_ORIGIN or request.host_url.rstrip('/')
+        if (origin and origin != expected) or request.headers.get('Sec-Fetch-Site') == 'cross-site':
+            abort(403, description='Invalid request origin.')
+    if request.path == '/api/quote' and request.method == 'POST':
+        throttle('quote', 10, 600)
+
+
+@app.after_request
+def response_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
+    response.headers['Content-Security-Policy'] = "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    if request.path.startswith('/api/') or request.path == '/admin.html':
+        response.headers['Cache-Control'] = 'no-store'
+    if PRODUCTION:
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000'
+    return response
+
+
+@app.errorhandler(Exception)
+def handle_error(error):
+    if isinstance(error, HTTPException):
+        return jsonify(error=error.description), error.code
+    if isinstance(error, (ValueError, KeyError, TypeError)):
+        return jsonify(error='Invalid request. Check the supplied fields and try again.'), 400
+    app.logger.exception('Request failed')
+    return jsonify(error='The request could not be completed. Please try again.'), 500
+
+
+def payload():
+    data = request.get_json()
+    if not isinstance(data, dict):
+        abort(400, description='Expected a JSON object.')
+    return data
+
+
+def text_field(data, key, length, required=False):
+    value = data.get(key, '')
+    if not isinstance(value, str) or len(value) > length or (required and not value.strip()):
+        abort(400, description=f'Enter a valid {key.replace("_", " ")} (maximum {length} characters).')
+    return value.strip()
+
+
+def image_path(value):
+    if value and not (value.startswith('assets/') and '..' not in value and '\\' not in value) and not (urlsplit(value).scheme == 'https' and urlsplit(value).netloc):
+        abort(400, description='Use an assets/ image path or an HTTPS image URL.')
+    return value
+
+
+@app.get('/api/products')
+def products():
+    with closing(connect()) as db:
+        result = [dict(r) for r in query(db, 'SELECT * FROM products ORDER BY name, size').fetchall()]
+    folder = ROOT / 'assets' / 'product_images'
+    files = sorted((p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in ('.png','.jpg','.jpeg','.webp','.gif')), key=lambda p:p.name.lower()) if folder.exists() else []
+    for product in result:
+        product['display_image'] = image_for(product, files)
+    return jsonify(result)
+
+
+@app.get('/api/settings')
+def settings():
+    with closing(connect()) as db:
+        return jsonify({r['name']:r['value'] for r in query(db, 'SELECT * FROM settings').fetchall()})
+
+
+@app.get('/api/admin')
+def admin():
+    return jsonify(ok=True)
+
+
+@app.get('/api/quotes')
+def quotes():
+    with closing(connect()) as db:
+        return jsonify([dict(r) for r in query(db, 'SELECT * FROM quotes ORDER BY id DESC').fetchall()])
+
+
+@app.post('/api/quote')
+def submit_quote():
+    from datetime import datetime, timezone
+    data = payload()
+    customer, items = data.get('customer'), data.get('items')
+    if not isinstance(customer, dict) or not isinstance(items, list) or not 1 <= len(items) <= 100:
+        abort(400, description='Enter your details and between 1 and 100 quote items.')
+    customer = {key:text_field(customer, key, limit, key in ('name','email')) for key, limit in [('name',200),('email',254),('phone',80),('company',200),('message',4000)]}
+    if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+', customer['email']):
+        abort(400, description='Enter a valid email address.')
+    clean, seen = [], set()
+    with closing(connect()) as db:
+        for item in items:
+            if not isinstance(item, dict) or type(item.get('id')) is not int or type(item.get('quantity')) is not int or not 1 <= item['quantity'] <= 10000 or item['id'] in seen:
+                abort(400, description='Invalid product or quantity.')
+            product = query(db, 'SELECT id,name,stock_code,size FROM products WHERE id=?', (item['id'],)).fetchone()
+            if not product:
+                abort(400, description='A selected product is no longer available. Remove it and try again.')
+            clean.append({**dict(product),'quantity':item['quantity']})
+            seen.add(item['id'])
+        query(db, 'INSERT INTO quotes (created,customer,items) VALUES (?,?,?)', (datetime.now(timezone.utc).isoformat(),json.dumps(customer),json.dumps(clean)))
+        db.commit()
+    return jsonify(ok=True)
+
+
+@app.post('/api/product')
+def save_product():
+    data = payload()
+    fields = {'category':255,'name':500,'description':10000,'image':2000,'stock_code':255,'size':255,'tags':10000}
+    values = [text_field(data, key, limit, key in ('name','category')) for key, limit in fields.items()]
+    values[3] = image_path(values[3])
+    with closing(connect()) as db:
+        if data.get('id'):
+            ident = int(data['id'])
+            if not query(db, 'SELECT id FROM products WHERE id=?', (ident,)).fetchone():
+                abort(404, description='Product not found.')
+            query(db, 'UPDATE products SET category=?,name=?,description=?,image=?,stock_code=?,size=?,tags=? WHERE id=?', (*values,ident))
+        else:
+            ident = query(db, 'INSERT INTO products (category,name,description,image,stock_code,size,tags) VALUES (?,?,?,?,?,?,?)', values).lastrowid
+        db.commit()
+    return jsonify(ok=True, id=ident)
+
+
+@app.post('/api/delete-product')
+def delete_product():
+    data = payload()
+    with closing(connect()) as db:
+        query(db, 'DELETE FROM products WHERE id=?', (int(data['id']),))
+        db.commit()
+    return jsonify(ok=True)
+
+
+@app.post('/api/settings')
+def save_settings():
+    data = payload()
+    with closing(connect()) as db:
+        for key in ('hero_image','hero_title','hero_text'):
+            if key in data:
+                value = text_field(data, key, 2000)
+                if key == 'hero_image': value = image_path(value)
+                query(db, 'DELETE FROM settings WHERE name=?', (key,))
+                query(db, 'INSERT INTO settings (name,value) VALUES (?,?)', (key,value))
+        db.commit()
+    return jsonify(ok=True)
+
+
+@app.post('/api/upload')
+def upload():
+    data = payload()
+    ext = Path(text_field(data,'name',255,True)).suffix.lower()
+    signatures = {'.png':b'\x89PNG\r\n\x1a\n','.jpg':b'\xff\xd8\xff','.jpeg':b'\xff\xd8\xff','.gif':b'GIF8','.webp':b'RIFF'}
+    if ext not in signatures:
+        abort(400, description='Choose a PNG, JPEG, GIF or WebP image.')
+    raw = base64.b64decode(data['content'], validate=True)
+    if len(raw) > 5_000_000 or not raw.startswith(signatures[ext]) or (ext == '.webp' and raw[8:12] != b'WEBP'):
+        abort(400, description='Choose a valid image smaller than 5 MB.')
+    dest = ROOT / 'assets' / 'uploads'
+    dest.mkdir(exist_ok=True)
+    filename = secrets.token_hex(16) + ext
+    (dest / filename).write_bytes(raw)
+    return jsonify(path='assets/uploads/' + filename)
+
+
+@app.get('/')
+@app.get('/<path:path>')
+def static_file(path='index.html'):
+    target = (ROOT / path).resolve()
+    public_pages = {'index.html','products.html','categories.html','category.html','quote-request.html','admin.html'}
+    allowed = target.parent == ROOT and target.name in public_pages or any(parent in target.parents for parent in (ROOT/'css',ROOT/'js',ROOT/'assets'))
+    if not allowed or not target.is_file(): abort(404)
+    return send_file(target, max_age=3600 if target.suffix != '.html' else 0)
+
+
+def run():
+    from waitress import serve
+    if PRODUCTION and (len(ADMIN_PASSWORD) < 16 or not PUBLIC_ORIGIN.startswith('https://')):
+        raise SystemExit('Production requires ADMIN_PASSWORD with at least 16 characters and an HTTPS PUBLIC_ORIGIN.')
+    init()
+    host, port = os.getenv('HOST','127.0.0.1'), int(os.getenv('PORT','8000'))
+    print(f'Rangechem running at http://{host}:{port}; management ' + ('enabled' if ADMIN_PASSWORD else 'disabled'), flush=True)
+    serve(app, host=host, port=port, threads=8, max_request_body_size=8_000_000, channel_timeout=30)
+
 
 if __name__ == '__main__':
-    init()
-    print('Rangechem running at http://127.0.0.1:8000; management ' + ('enabled' if ADMIN_PASSWORD else 'disabled (set ADMIN_PASSWORD)'))
-    ThreadingHTTPServer(('127.0.0.1',8000),Handler).serve_forever()
+    run()

@@ -55,6 +55,6 @@ import server
 server.init()
 print('Open http://127.0.0.1:8000 (Ctrl+C stops the website).', flush=True)
 try:
-    server.ThreadingHTTPServer(('127.0.0.1', 8000), server.Handler).serve_forever()
+    server.run()
 except KeyboardInterrupt:
     print('\nWebsite stopped. MariaDB remains running for local use.')
